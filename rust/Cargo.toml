@@ -1,0 +1,14 @@
+[package]
+name = "slackmacs-module-rs"
+version = "0.1.0"
+edition = "2021"
+authors = ["Radosław Kostrzewski <radoslaw.kostrzewski@protonmail.com>"]
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+emacs = "0.18"
+
+[dev-dependencies]
+emacs-rs-module = "0.18.0"

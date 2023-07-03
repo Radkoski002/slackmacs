@@ -1,6 +1,10 @@
-/.idea
-/target
-/Cargo.lock
+/**/.vscode
+/**/benchmarks
+/**/.idea
+/**/target
+/**/Cargo.lock
 /**/*.el~
 /**/\#*
 /**/\.\#*
+/**/*.py
+/**/benchmark.txt
