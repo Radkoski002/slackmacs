@@ -21,7 +21,7 @@
 
 ;;; Commentary:
 
-;; Put a description of the package here
+;; Slack client for Emacs written in elisp and rust.
 
 ;;; Code:
 
