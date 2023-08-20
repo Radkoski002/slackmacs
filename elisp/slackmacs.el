@@ -25,7 +25,6 @@
 
 ;;; Code:
 
-(add-to-list 'load-path "/home/radkoski/Coding/Studia/INZ/slackmacs/rust/target/debug")
 (require 'slackmacs-module-rs)
 (require 'slackmacs-test-module)
 

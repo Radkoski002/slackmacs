@@ -8,3 +8,5 @@
 /**/\.\#*
 /**/*.py
 /**/benchmark.txt
+/elisp/slackmacs-module-rs.so
+/**/*.tar

@@ -1,6 +1,11 @@
-use emacs::{defun, Env, Result, Value};
-use std::thread::{self, sleep};
-use std::time::Duration;
+use emacs::{defun, Env, IntoLisp, Result, Value, Vector};
+use reqwest;
+
+mod api_types;
+mod helpers;
+mod test;
+
+use helpers::url_builder::{get_url, ApiPaths};
 
 // Emacs won't load the module without this.
 emacs::plugin_is_GPL_compatible!();
@@ -11,59 +16,51 @@ fn init(_: &Env) -> Result<()> {
     Ok(())
 }
 
-// Define a function callable by Lisp code.
 #[defun]
 fn say_hello(env: &Env, mut name: String) -> Result<Value<'_>> {
     name = name.replace("\n", " ");
-    env.message(&format!("Hello, {}!", name))
+    env.message(&format!("{} {}!", test::return_string(), name))
 }
 
-#[defun]
-fn change_case(_: &Env, name: String) -> Result<String> {
-    let mut char_vec: Vec<char> = name.chars().collect();
-    char_vec = char_vec
-        .iter()
-        .map(|char| {
-            if char.is_uppercase() {
-                char.to_ascii_lowercase()
-            } else {
-                char.to_ascii_uppercase()
-            }
-        })
-        .collect();
-    let result: String = char_vec.into_iter().collect();
-    Ok(result)
-}
-
-#[defun]
-fn simulate_long_operation(env: &Env) -> Result<Value<'_>> {
-    let long_operation_thread = thread::spawn(move || {
-        sleep(Duration::from_secs(120));
-    });
-
-    long_operation_thread.join().unwrap();
-    env.message("Long operation done")
-}
-
-#[defun]
-fn simulate_error() -> Result<String> {
-    sleep(Duration::from_secs(1));
-    panic!("Something went wrong");
-}
-
-#[defun]
-fn benchmark_func(env: &Env) -> Result<String> {
-    let buffer_str = env.call("buffer-string", &[])?;
-    let updated_buffer_str = env.call("upcase", &[buffer_str])?.into_rust::<String>()?;
-    Ok(updated_buffer_str)
-}
-
-#[defun]
-fn benchmark_func_rust(env: &Env) -> Result<String> {
-    let buffer_str = env
-        .call("buffer-string", &[])?
-        .into_rust::<String>()
+fn fetch_api(
+    client: reqwest::blocking::Client,
+    token: &String,
+    cookie: &String,
+    path: ApiPaths,
+) -> serde_json::Value {
+    let res = client
+        .post(&get_url(&token, path, None))
+        .header("Cookie", format!("d={}", cookie))
+        .send()
         .unwrap();
-    let updated_buffer_str = buffer_str.to_uppercase();
-    Ok(updated_buffer_str)
+
+    let json = res.json::<serde_json::Value>().unwrap();
+    match json.get("error") {
+        Some(e) => println!("Error: {}", e),
+        None => println!("No error"),
+    }
+    json
+}
+
+#[defun(user_ptr)]
+fn to_rust_vec_string(input: Vector) -> Result<Vec<String>> {
+    let mut vec = vec![];
+    for e in input {
+        vec.push(e.into_rust()?);
+    }
+    Ok(vec)
+}
+
+#[defun]
+fn get_users_list(token: String, cookie: String, env: &Env) -> Result<Value> {
+    let client = reqwest::blocking::Client::new();
+    let json = fetch_api(client, &token, &cookie, ApiPaths::UsersList);
+    let members = json.get("members").unwrap().to_string();
+    let parsed_members: Vec<api_types::User> = serde_json::from_str(&members).unwrap();
+    let mut usernames = vec![];
+    for user in parsed_members {
+        usernames.push(user.real_name.into_lisp(env)?);
+    }
+    let result = env.vector(&usernames)?;
+    Ok(result)
 }
