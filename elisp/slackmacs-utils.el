@@ -1,7 +1,7 @@
 (defun open-slack-buffer ()
-  (let ((buffer (generate-new-buffer "slackmacs")))
-    (set-buffer-major-mode buffer)
-    (display-buffer buffer '(display-buffer-pop-up-frame . nil))))
+  (let ((buffer (get-buffer-create "slackmacs")))
+    (switch-to-buffer buffer)
+    ))
 
 (defun write-to-buffer (text)
   (with-current-buffer "slackmacs" 
