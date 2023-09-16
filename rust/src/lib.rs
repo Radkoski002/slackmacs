@@ -1,11 +1,12 @@
 use emacs::{defun, Env, IntoLisp, Result, Value, Vector};
 use reqwest;
 
-mod api_types;
 mod helpers;
+mod structures;
 mod test;
 
 use helpers::url_builder::{get_url, ApiPaths};
+use structures::api_types::User;
 
 // Emacs won't load the module without this.
 emacs::plugin_is_GPL_compatible!();
@@ -43,24 +44,36 @@ fn fetch_api(
 }
 
 #[defun(user_ptr)]
-fn to_rust_vec_string(input: Vector) -> Result<Vec<String>> {
-    let mut vec = vec![];
-    for e in input {
-        vec.push(e.into_rust()?);
-    }
-    Ok(vec)
-}
-
-#[defun]
-fn get_users_list(token: String, cookie: String, env: &Env) -> Result<Value> {
+fn get_users_list(token: String, cookie: String) -> Result<Vec<User>> {
     let client = reqwest::blocking::Client::new();
     let json = fetch_api(client, &token, &cookie, ApiPaths::UsersList);
     let members = json.get("members").unwrap().to_string();
-    let parsed_members: Vec<api_types::User> = serde_json::from_str(&members).unwrap();
-    let mut usernames = vec![];
-    for user in parsed_members {
-        usernames.push(user.real_name.into_lisp(env)?);
+    let parsed_members: Vec<User> = serde_json::from_str(&members).unwrap();
+    Ok(parsed_members)
+}
+
+type UserVec = Vec<User>;
+
+#[defun]
+fn parse_users_list<'a>(users: &UserVec, params: Vector<'a>) -> Result<Value<'a>> {
+    let env = params.value().env;
+    let mut test = vec![];
+    for param in params {
+        test.push(param)
     }
-    let result = env.vector(&usernames)?;
-    Ok(result)
+    let mut parsed_users = vec![];
+    for user in users {
+        let mut parsed_user = vec![];
+        for param in params {
+            let rust_param = param.into_rust::<String>()?;
+            match rust_param.as_str() {
+                "id" => parsed_user.push(user.get_id().into_lisp(env)?),
+                "name" => parsed_user.push(user.get_name().into_lisp(env)?),
+                "real_name" => parsed_user.push(user.get_real_name().into_lisp(env)?),
+                _ => panic!("Unknown parameter"),
+            }
+        }
+        parsed_users.push(env.call("list", &parsed_user)?);
+    }
+    Ok(env.call("list", &parsed_users)?)
 }

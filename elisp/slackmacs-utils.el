@@ -1,6 +1,7 @@
 (defun open-slack-buffer ()
   (let ((buffer (get-buffer-create "slackmacs")))
     (switch-to-buffer buffer)
+    (read-only-mode)
     ))
 
 (defun write-to-buffer (text)
@@ -10,9 +11,24 @@
 
 (defun write-vector (vec)
   (setq ii 0)
-  (while (< ii (length vec))
-    (write-to-buffer (format "%s\n" (aref vec ii)))
-    (setq ii (1+ ii)))
+  (let ((inhibit-read-only t))
+    (while (< ii (length vec))
+      (write-to-buffer (format "%s\n" (aref vec ii)))
+      (setq ii (1+ ii)))
+    )
+  )
+
+(defun make-buttons-from-vector (vec)
+  (setq ii 0)
+  (let ((inhibit-read-only t))
+    (while (< ii (length vec))
+      (insert-text-button 
+        (buttonize 
+          (format "%s\n" (aref vec ii)) 
+          (lambda (x) (message "clicked"))
+          ))
+      (setq ii (1+ ii)))
+    )
   )
 
 
