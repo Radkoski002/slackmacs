@@ -1,4 +1,3 @@
-use emacs::{defun, Result};
 use serde::{Deserialize, Serialize};
 
 use super::profile::Profile;
@@ -57,19 +56,4 @@ impl User {
     pub fn get_real_name(&self) -> String {
         self.real_name.clone().unwrap()
     }
-}
-
-#[defun]
-fn get_user_name(user: &User) -> Result<String> {
-    Ok(user.get_name())
-}
-
-#[defun]
-fn get_user_real_name(user: &User) -> Result<String> {
-    Ok(user.get_real_name())
-}
-
-#[defun]
-fn get_user_id(user: &User) -> Result<String> {
-    Ok(user.get_id())
 }

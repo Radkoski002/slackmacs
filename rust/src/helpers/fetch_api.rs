@@ -5,9 +5,10 @@ pub fn fetch_api(
     token: &String,
     cookie: &String,
     path: ApiPaths,
+    options: Option<String>,
 ) -> serde_json::Value {
     let res = client
-        .post(&get_url(&token, path, None))
+        .post(&get_url(&token, path, options))
         .header("Cookie", format!("d={}", cookie))
         .send()
         .unwrap();

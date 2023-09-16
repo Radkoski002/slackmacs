@@ -10,7 +10,7 @@ type UserVec = Vec<User>;
 #[defun(user_ptr)]
 fn get(token: String, cookie: String) -> Result<Vec<User>> {
     let client = reqwest::blocking::Client::new();
-    let json = fetch_api(client, &token, &cookie, ApiPaths::UsersList);
+    let json = fetch_api(client, &token, &cookie, ApiPaths::UsersList, None);
     let members = json.get("members").unwrap().to_string();
     let parsed_members: Vec<User> = serde_json::from_str(&members).unwrap();
     Ok(parsed_members)
@@ -19,10 +19,6 @@ fn get(token: String, cookie: String) -> Result<Vec<User>> {
 #[defun]
 fn parse<'a>(users: &UserVec, params: Vector<'a>) -> Result<Value<'a>> {
     let env = params.value().env;
-    let mut test = vec![];
-    for param in params {
-        test.push(param)
-    }
     let mut parsed_users = vec![];
     for user in users {
         let mut parsed_user = vec![];

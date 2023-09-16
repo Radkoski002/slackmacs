@@ -1,0 +1,16 @@
+(require 'slackmacs-utils)
+
+(defun slackmacs-open-conversation (id)
+  (let ((inhibit-read-only t))
+    (clear-slack-buffer)
+    (let ((messages-list (slackmacs/conversation-get (get-token) (get-cookie) id)))
+      (let ((parsed-messages (slackmacs/conversation-parse messages-list ["text"])))
+        (dolist (message parsed-messages)
+          (insert (format "%s\n\n" (nth 0 message)) )
+        )
+      )
+    )
+  )
+)
+
+(provide 'slackmacs-conversation)

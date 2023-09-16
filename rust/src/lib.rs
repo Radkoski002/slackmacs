@@ -3,6 +3,8 @@ use emacs::{Env, Result};
 mod api_types;
 mod helpers;
 
+mod conversation;
+mod conversation_list;
 mod users_list;
 
 // Emacs won't load the module without this.

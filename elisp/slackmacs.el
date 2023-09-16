@@ -26,7 +26,7 @@
 ;;; Code:
 
 (require 'slackmacs-module-rs)
-(require 'slackmacs-users-list)
+(require 'slackmacs-conversation-list)
 
 (provide 'slackmacs)
 ;;; slackmacs.el ends here

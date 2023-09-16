@@ -4,33 +4,11 @@
     (read-only-mode)
     ))
 
-(defun write-to-buffer (text)
-  (with-current-buffer "slackmacs" 
-    (goto-char (point-max))
-    (insert text)))
-
-(defun write-vector (vec)
-  (setq ii 0)
-  (let ((inhibit-read-only t))
-    (while (< ii (length vec))
-      (write-to-buffer (format "%s\n" (aref vec ii)))
-      (setq ii (1+ ii)))
-    )
-  )
-
-(defun make-buttons-from-vector (vec)
-  (setq ii 0)
-  (let ((inhibit-read-only t))
-    (while (< ii (length vec))
-      (insert-text-button 
-        (buttonize 
-          (format "%s\n" (aref vec ii)) 
-          (lambda (x) (message "clicked"))
-          ))
-      (setq ii (1+ ii)))
-    )
-  )
-
+(defun clear-slack-buffer ()
+  (let ((buffer (get-buffer-create "slackmacs")))
+    (with-current-buffer buffer
+      (erase-buffer)
+      )))
 
 (defun get-token ()
   (auth-source-pick-first-password
