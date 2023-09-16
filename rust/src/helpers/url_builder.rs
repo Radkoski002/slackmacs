@@ -1,5 +1,4 @@
-use std::env;
-
+#[allow(dead_code)]
 pub enum ApiPaths {
     UsersList,
     ConverstaionList,

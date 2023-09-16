@@ -3,8 +3,8 @@
 (defun slackmacs-list-users ()
   (interactive)
   (open-slack-buffer)
-  (let ((user_vector (slackmacs-get-users-list (get-token) (get-cookie))))
-    (let ((parsed_users (slackmacs-parse-users-list user_vector ["id" "name" "real_name"])))
+  (let ((user_vector (slackmacs/users-list-get (get-token) (get-cookie))))
+    (let ((parsed_users (slackmacs/users-list-parse user_vector ["id" "name" "real_name"])))
       (let ((inhibit-read-only t))
         (let ((index 0))
           (dolist (user parsed_users)
@@ -21,5 +21,5 @@
 )
 
 
-(provide 'slackmacs-test-module)
+(provide 'slackmacs-users-list)
 

@@ -1,38 +1,7 @@
+use emacs::{defun, Result};
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct Profile {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    avatar_hash: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    status_text: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    status_emoji: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    real_name: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    display_name: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    real_name_normalized: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    display_name_normalized: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    email: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    image_24: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    image_32: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    image_48: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    image_72: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    image_192: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    image_512: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    team: Option<String>,
-}
+use super::profile::Profile;
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct User {
@@ -54,8 +23,8 @@ pub struct User {
     tz_label: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     tz_offset: Option<i32>,
-    // #[serde(skip_serializing_if = "Option::is_none")]
-    // profile: Option<Profile>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    profile: Option<Profile>,
     #[serde(skip_serializing_if = "Option::is_none")]
     is_admin: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -88,4 +57,19 @@ impl User {
     pub fn get_real_name(&self) -> String {
         self.real_name.clone().unwrap()
     }
+}
+
+#[defun]
+fn get_user_name(user: &User) -> Result<String> {
+    Ok(user.get_name())
+}
+
+#[defun]
+fn get_user_real_name(user: &User) -> Result<String> {
+    Ok(user.get_real_name())
+}
+
+#[defun]
+fn get_user_id(user: &User) -> Result<String> {
+    Ok(user.get_id())
 }
