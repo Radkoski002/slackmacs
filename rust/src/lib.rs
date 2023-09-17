@@ -6,6 +6,7 @@ mod helpers;
 mod api_helpers;
 mod conversation;
 mod conversation_list;
+mod custom_errors;
 mod users_list;
 
 // Emacs won't load the module without this.

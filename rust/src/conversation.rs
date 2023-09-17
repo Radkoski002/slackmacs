@@ -1,17 +1,14 @@
-use emacs::{defun, Result, Value, Vector};
+use emacs::{defun, Env, Result, Value, Vector};
 
 use crate::api_helpers::{get_data, parse_data_vec};
 use crate::api_types::messages::{message_matcher, BaseMessage};
+use crate::custom_errors::api_error;
 use crate::helpers::url_builder::ApiPaths;
 
 type MessageVec = Vec<BaseMessage>;
 
-emacs::define_errors! {
-    param_error "Invalid parameter" (wrong_type_argument)
-}
-
 #[defun(user_ptr)]
-fn get(token: String, cookie: String, channel_id: String) -> Result<MessageVec> {
+fn get(token: String, cookie: String, channel_id: String, env: &Env) -> Result<MessageVec> {
     let channel_param = format!("channel={}", channel_id);
     let data = get_data::<MessageVec>(
         cookie,
@@ -20,7 +17,10 @@ fn get(token: String, cookie: String, channel_id: String) -> Result<MessageVec> 
         "messages".to_string(),
         Some(channel_param),
     );
-    Ok(data)
+    match data {
+        Ok(data) => return Ok(data),
+        Err(err) => return env.signal(api_error, (err.message,))?,
+    }
 }
 
 #[defun]

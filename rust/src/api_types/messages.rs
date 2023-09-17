@@ -1,5 +1,7 @@
 use serde::{Deserialize, Serialize};
 
+use crate::custom_errors::ParamError;
+
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct BaseMessage {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -20,9 +22,11 @@ impl BaseMessage {
     }
 }
 
-pub fn message_matcher(message: &BaseMessage, param: String) -> String {
+pub fn message_matcher(message: &BaseMessage, param: String) -> Result<String, ParamError> {
     match param.as_str() {
-        "text" => message.get_text(),
-        _ => panic!("Invalid parameter"),
+        "text" => Ok(message.get_text()),
+        _ => Err(ParamError {
+            message: format!("Invalid param: {}", param),
+        }),
     }
 }

@@ -1,13 +1,14 @@
-use emacs::{defun, Result, Value, Vector};
+use emacs::{defun, Env, Result, Value, Vector};
 
 use crate::api_helpers::{get_data, parse_data_vec};
 use crate::api_types::user::{user_matcher, User};
+use crate::custom_errors::api_error;
 use crate::helpers::url_builder::ApiPaths;
 
 type UserVec = Vec<User>;
 
 #[defun(user_ptr)]
-fn get(token: String, cookie: String) -> Result<Vec<User>> {
+fn get(token: String, cookie: String, env: &Env) -> Result<Vec<User>> {
     let data = get_data::<UserVec>(
         cookie,
         token,
@@ -15,7 +16,10 @@ fn get(token: String, cookie: String) -> Result<Vec<User>> {
         "members".to_string(),
         None,
     );
-    Ok(data)
+    match data {
+        Ok(data) => return Ok(data),
+        Err(err) => return env.signal(api_error, (err.message,))?,
+    }
 }
 
 #[defun]

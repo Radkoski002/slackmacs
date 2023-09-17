@@ -7,6 +7,7 @@
   (let ((conversation_vector (slackmacs/conversation-list-get (get-token) (get-cookie))))
     (let ((parsed_conversations (slackmacs/conversation-list-parse conversation_vector ["id"])))
       (let ((inhibit-read-only t))
+        (clear-slack-buffer)
         (dolist (conversation parsed_conversations)
           (insert-text-button 
               (format "%s\n" (nth 0 conversation)) 
