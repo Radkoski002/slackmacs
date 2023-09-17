@@ -16,3 +16,11 @@ impl Conversation {
         self.name.clone().unwrap()
     }
 }
+
+pub fn conversation_matcher(conversation: &Conversation, param: String) -> String {
+    match param.as_str() {
+        "id" => conversation.get_id(),
+        "name" => conversation.get_name(),
+        _ => panic!("Invalid parameter"),
+    }
+}

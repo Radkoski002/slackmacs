@@ -57,3 +57,12 @@ impl User {
         self.real_name.clone().unwrap()
     }
 }
+
+pub fn user_matcher(user: &User, param: String) -> String {
+    match param.as_str() {
+        "id" => user.get_id(),
+        "name" => user.get_name(),
+        "real_name" => user.get_real_name(),
+        _ => panic!("Invalid parameter"),
+    }
+}

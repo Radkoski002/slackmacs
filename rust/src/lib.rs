@@ -3,6 +3,7 @@ use emacs::{Env, Result};
 mod api_types;
 mod helpers;
 
+mod api_helpers;
 mod conversation;
 mod conversation_list;
 mod users_list;

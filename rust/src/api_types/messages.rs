@@ -19,3 +19,10 @@ impl BaseMessage {
         self.text.clone().unwrap()
     }
 }
+
+pub fn message_matcher(message: &BaseMessage, param: String) -> String {
+    match param.as_str() {
+        "text" => message.get_text(),
+        _ => panic!("Invalid parameter"),
+    }
+}
