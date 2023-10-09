@@ -13,13 +13,13 @@
 (defun get-token ()
   (auth-source-pick-first-password
            :host "slack-token"
-           :user "test-channel")
+           :user slackmacs-team-domain)
   )
 
 (defun get-cookie ()
   (auth-source-pick-first-password
            :host "slack-cookie"
-           :user "test-channel")
+           :user slackmacs-team-domain)
   )
 
 (provide 'slackmacs-utils)

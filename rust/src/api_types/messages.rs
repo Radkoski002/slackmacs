@@ -20,11 +20,16 @@ impl BaseMessage {
     pub fn get_text(&self) -> String {
         self.text.clone().unwrap()
     }
+
+    pub fn get_user(&self) -> String {
+        self.user.clone().unwrap()
+    }
 }
 
 pub fn message_matcher(message: &BaseMessage, param: String) -> Result<String, ParamError> {
     match param.as_str() {
         "text" => Ok(message.get_text()),
+        "user" => Ok(message.get_user()),
         _ => Err(ParamError {
             message: format!("Invalid param: {}", param),
         }),
