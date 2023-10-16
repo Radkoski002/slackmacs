@@ -11,7 +11,7 @@ pub fn get_data<T>(
     params: Option<String>,
 ) -> std::result::Result<T, ApiError>
 where
-    T: serde::de::DeserializeOwned,
+    T: serde::de::DeserializeOwned + Send,
 {
     let client = reqwest::blocking::Client::new();
     let json = fetch_api(
