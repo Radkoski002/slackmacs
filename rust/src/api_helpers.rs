@@ -31,9 +31,9 @@ where
             message: error_message,
         });
     }
-    let messages = json.get(json_field).unwrap().to_string();
-    let parsed_messages: T = serde_json::from_str(&messages).unwrap();
-    Ok(parsed_messages)
+    let results = json.get(json_field).unwrap().to_string();
+    let parsed_results: T = serde_json::from_str(&results).unwrap();
+    Ok(parsed_results)
 }
 
 pub fn parse_data_vec<'a, T>(

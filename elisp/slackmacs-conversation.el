@@ -1,6 +1,7 @@
 (require 'slackmacs-utils)
 
 (defun slackmacs-open-conversation (id)
+  (setq slackmacs_opened_conversation_id id)
   (let ((inhibit-read-only t))
     (clear-slack-buffer)
     (let ((messages-list (slackmacs/conversation-get (get-token) (get-cookie) id)))
@@ -13,5 +14,6 @@
     )
   )
 )
+
 
 (provide 'slackmacs-conversation)

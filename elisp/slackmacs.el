@@ -27,6 +27,8 @@
 
 (require 'slackmacs-module-rs)
 (require 'slackmacs-conversation-list)
+(require 'slackmacs-message)
+
 
 (provide 'slackmacs)
 ;;; slackmacs.el ends here

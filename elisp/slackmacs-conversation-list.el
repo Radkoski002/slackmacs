@@ -4,6 +4,7 @@
 (defun slackmacs-list-conversations ()
   (interactive)
   (open-slack-buffer)
+  (makunbound 'slackmacs_opened_conversation_id)
   (if (not (boundp 'slackmacs_users_vector))
     (setq slackmacs_users_vector (slackmacs/users-list-get (get-token) (get-cookie)))
   )
