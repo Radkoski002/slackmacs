@@ -1,10 +1,9 @@
 use emacs::{defun, Env, IntoLisp, Result, Value};
 
-use crate::api_types::messages::BaseMessage;
-use crate::custom_errors::api_error;
+use crate::{api_types::conversation::Conversation, custom_errors::api_error};
 
 #[defun]
-fn parse_from_json_string(json: String, env: &Env) -> Result<Value> {
+fn get_messages(json: String, env: &Env) -> Result<Value> {
     let parsed_json = serde_json::from_str::<serde_json::Value>(&json).unwrap();
     let status = parsed_json.get("ok").unwrap().to_string();
     if status != "true" {
@@ -21,17 +20,22 @@ fn parse_from_json_string(json: String, env: &Env) -> Result<Value> {
 }
 
 #[defun(user_ptr)]
-fn parse_string_to_message(json: String) -> Result<BaseMessage> {
-    let parsed_json = serde_json::from_str::<BaseMessage>(&json).unwrap();
+fn from_json(json: String) -> Result<Conversation> {
+    let parsed_json = serde_json::from_str::<Conversation>(&json).unwrap();
     Ok(parsed_json)
 }
 
 #[defun]
-fn get_message_text(message: &BaseMessage) -> Result<String> {
-    Ok(message.get_text())
+fn get_id(conversation: &Conversation) -> Result<String> {
+    Ok(conversation.get_id())
 }
 
 #[defun]
-fn get_message_sender(message: &BaseMessage) -> Result<String> {
-    Ok(message.get_user())
+fn get_name(conversation: &Conversation) -> Result<String> {
+    Ok(conversation.get_name())
+}
+
+#[defun]
+fn get_user_id(conversation: &Conversation) -> Result<String> {
+    Ok(conversation.get_user())
 }

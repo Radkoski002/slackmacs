@@ -1,14 +1,6 @@
 (require 'slackmacs-conversation)
 (require 'slackmacs-request)
 
-(defun slackmacs-websocket-test ()
-    (interactive) 
-    (request "http://127.0.0.1:7878"
-      :complete (cl-function
-                 (lambda (&key response &allow-other-keys)
-                   (message "Done: %s" (request-response-data response)))))
-  )
-
 (defun slackmacs-message-send ()
   (interactive)
 

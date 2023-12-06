@@ -1,13 +1,13 @@
 use emacs::{Env, Result};
 
 mod api_types;
-mod helpers;
 
 mod conversation;
 mod conversation_list;
 mod custom_errors;
+mod message;
+mod user;
 mod users_list;
-mod websocket;
 
 // Emacs won't load the module without this.
 emacs::plugin_is_GPL_compatible!();
