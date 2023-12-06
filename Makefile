@@ -2,11 +2,14 @@ VERSION:=0.0.1
 PACKAGE_NAME:=slackmacs-$(VERSION)
 PACKAGE_DIR:=/tmp/$(PACKAGE_NAME)
 
-all: clean package
+all: clean package build-backend
+
+build-backend:
+	cargo build --manifest-path ./rust-backend/Cargo.toml;
 
 build:
-	cargo build --manifest-path ./rust/Cargo.toml;
-	cp ./rust/target/debug/libslackmacs_module_rs.so ./elisp/slackmacs-module-rs.so
+	cargo build --manifest-path ./emacs-rust/Cargo.toml;
+	cp ./emacs-rust/target/debug/libslackmacs_module_rs.so ./elisp/slackmacs-module-rs.so
 
 package: build 
 	mkdir $(PACKAGE_DIR)

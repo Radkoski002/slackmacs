@@ -14,6 +14,7 @@ reqwest = { version = "0.11.18", features = ["json", "blocking"] }
 serde = { version = "1.0.174", features = ["derive"] }
 serde_json = "1.0.103"
 dotenv = "0.15.0"
+websocket = "0.27.0"
 
 [dev-dependencies]
 emacs-rs-module = "0.18.0"

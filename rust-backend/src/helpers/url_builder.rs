@@ -3,7 +3,8 @@ pub enum ApiPaths {
     UsersList,
     ConversationList,
     SendMessage,
-    ConversationsHistory,
+    ConversationHistory,
+    Websocket,
 }
 
 const fn get_api_path(path: ApiPaths) -> &'static str {
@@ -11,7 +12,8 @@ const fn get_api_path(path: ApiPaths) -> &'static str {
         ApiPaths::UsersList => "users.list",
         ApiPaths::ConversationList => "conversations.list",
         ApiPaths::SendMessage => "chat.postMessage",
-        ApiPaths::ConversationsHistory => "conversations.history",
+        ApiPaths::ConversationHistory => "conversations.history",
+        ApiPaths::Websocket => "rtm.connect",
     }
 }
 

@@ -28,6 +28,7 @@
 (require 'slackmacs-module-rs)
 (require 'slackmacs-conversation-list)
 (require 'slackmacs-message)
+(require 'slackmacs-request)
 
 
 (provide 'slackmacs)

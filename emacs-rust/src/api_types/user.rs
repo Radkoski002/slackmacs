@@ -1,7 +1,5 @@
 use serde::{Deserialize, Serialize};
 
-use crate::custom_errors::ParamError;
-
 use super::profile::Profile;
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -53,20 +51,5 @@ impl User {
 
     pub fn get_name(&self) -> String {
         self.name.clone().unwrap()
-    }
-
-    pub fn get_real_name(&self) -> String {
-        self.real_name.clone().unwrap()
-    }
-}
-
-pub fn user_matcher(user: &User, param: String) -> Result<String, ParamError> {
-    match param.as_str() {
-        "id" => Ok(user.get_id()),
-        "name" => Ok(user.get_name()),
-        "real_name" => Ok(user.get_real_name()),
-        _ => Err(ParamError {
-            message: format!("Invalid param: {}", param),
-        }),
     }
 }
