@@ -1,6 +1,6 @@
 use emacs::{defun, Result};
 
-use crate::api_types::messages::BaseMessage;
+use crate::api_types::BaseMessage;
 
 #[defun(user_ptr)]
 fn from_json(json: String) -> Result<BaseMessage> {

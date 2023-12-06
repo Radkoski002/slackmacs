@@ -1,6 +1,6 @@
 use emacs::{defun, Result};
 
-use crate::api_types::user::User;
+use crate::api_types::User;
 
 #[defun(user_ptr)]
 fn from_json(json: String) -> Result<User> {

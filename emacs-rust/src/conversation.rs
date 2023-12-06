@@ -1,22 +1,17 @@
-use emacs::{defun, Env, IntoLisp, Result, Value};
+use emacs::{defun, Env, Result, Value};
 
-use crate::{api_types::conversation::Conversation, custom_errors::api_error};
+use crate::{api_types::Conversation, custom_errors::api_error, helpers::get_vector_from_json};
 
 #[defun]
 fn get_messages(json: String, env: &Env) -> Result<Value> {
-    let parsed_json = serde_json::from_str::<serde_json::Value>(&json).unwrap();
-    let status = parsed_json.get("ok").unwrap().to_string();
-    if status != "true" {
-        let error_message = parsed_json.get("error").unwrap().to_string();
-        return env.signal(api_error, (error_message,))?;
+    let vector = get_vector_from_json(json, "messages".to_string(), env);
+    match vector {
+        Ok(mut vector) => {
+            vector.reverse();
+            return Ok(env.list(&vector)?);
+        }
+        Err(error) => env.signal(api_error, (error.message,))?,
     }
-    let messages = parsed_json.get("messages").unwrap().as_array().unwrap();
-    let mut final_vec = vec![];
-    for message in messages {
-        final_vec.push(message.to_string().into_lisp(env)?)
-    }
-    final_vec.reverse();
-    Ok(env.list(&final_vec)?)
 }
 
 #[defun(user_ptr)]

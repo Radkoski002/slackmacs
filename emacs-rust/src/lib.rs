@@ -5,6 +5,7 @@ mod api_types;
 mod conversation;
 mod conversation_list;
 mod custom_errors;
+mod helpers;
 mod message;
 mod user;
 mod users_list;
