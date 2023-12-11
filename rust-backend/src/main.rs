@@ -1,6 +1,7 @@
 use std::net::SocketAddr;
+use std::sync::Arc;
 
-use helpers::get_response::get_response;
+use helpers::get_response::{check_headers, get_response};
 use helpers::url_builder::ApiPaths;
 use http_body_util::{combinators::BoxBody, BodyExt};
 use hyper;
@@ -12,7 +13,10 @@ use hyper::{Request, Response};
 use hyper_util::rt::TokioIo;
 use reqwest::Client;
 use tokio::net::TcpListener;
+use tokio::sync::Mutex;
+use websocket::OwnedMessage;
 
+use crate::helpers::get_response::get_raw_fetch_result;
 use crate::helpers::responses::{empty, full};
 
 mod helpers;
@@ -21,17 +25,24 @@ mod helpers;
 async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
     let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
     let listener = TcpListener::bind(addr).await?;
-    let client = Client::new();
+    let request_client = Client::new();
+    let is_websocket_running = Arc::new(Mutex::new(false));
 
     loop {
         let (stream, _) = listener.accept().await?;
-        let client = client.clone();
+        let client = request_client.clone();
+        let is_websocket_running = is_websocket_running.clone();
 
         let io = TokioIo::new(stream);
 
         tokio::task::spawn(async move {
             if let Err(err) = http1::Builder::new()
-                .serve_connection(io, service_fn(|req| request_handler(req, client.clone())))
+                .serve_connection(
+                    io,
+                    service_fn(|req| {
+                        request_handler(req, client.clone(), is_websocket_running.clone())
+                    }),
+                )
                 .await
             {
                 println!("Error serving connection: {:?}", err);
@@ -106,15 +117,58 @@ async fn test(
     return Ok(Response::new(full(string_body)));
 }
 
+async fn start(
+    req: Request<hyper::body::Incoming>,
+    client: reqwest::Client,
+    is_websocket_running: Arc<Mutex<bool>>,
+) -> Result<Response<BoxBody<Bytes, hyper::Error>>, hyper::Error> {
+    let websocket_checker = is_websocket_running.clone();
+    let mut is_websocket_running = is_websocket_running.lock().await;
+    if *is_websocket_running {
+        return Ok(Response::new(full("already running".to_string())));
+    }
+    let (head, _) = req.into_parts();
+    let headers = &head.headers;
+    let response = get_raw_fetch_result(client, headers, ApiPaths::Websocket, None).await;
+    let (token, cookie) = check_headers(headers).unwrap();
+    let json = serde_json::from_str::<serde_json::Value>(&response).unwrap();
+    tokio::spawn(async move {
+        let mut headers = websocket::header::Headers::new();
+        headers.set(websocket::header::Cookie(vec![format!("d={}", cookie)]));
+        println!("Headers: {:?}", headers);
+        let url = json["url"].as_str().unwrap();
+        let formatted_url = format!("{}?token={}", url, token);
+        println!("Connecting to {}", formatted_url);
+        let mut websocket_client = websocket::ClientBuilder::new(formatted_url.as_str())
+            .unwrap()
+            .custom_headers(&headers)
+            .connect(None)
+            .unwrap();
+        while let Ok(msg) = websocket_client.recv_message() {
+            match msg {
+                OwnedMessage::Text(text) => println!("Received: {}", text),
+                OwnedMessage::Binary(bin) => println!("Received: {:?}", bin),
+                _ => (),
+            }
+        }
+        let mut websocket_checker = websocket_checker.lock().await;
+        *websocket_checker = false;
+    });
+    *is_websocket_running = true;
+    return Ok(Response::new(full("started".to_string())));
+}
+
 async fn request_handler(
     req: Request<hyper::body::Incoming>,
     client: reqwest::Client,
+    is_websocket_running: Arc<Mutex<bool>>,
 ) -> Result<Response<BoxBody<Bytes, hyper::Error>>, hyper::Error> {
     match (req.method(), req.uri().path()) {
         (&Method::GET, "/") => Ok(Response::new(full("Try POSTing data to /echo"))),
         (&Method::POST, "/users-list") => get_users_list(req, client).await,
         (&Method::POST, "/conversation-list") => get_conversation_list(req, client).await,
         (&Method::POST, "/conversation-history") => get_conversation_history(req, client).await,
+        (&Method::POST, "/start") => start(req, client, is_websocket_running).await,
         (&Method::POST, "/send-message") => send(req, client).await,
         (&Method::POST, "/test") => test(req).await,
         (&Method::POST, "/echo") => Ok(Response::new(req.into_body().boxed())),

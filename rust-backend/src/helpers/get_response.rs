@@ -9,7 +9,7 @@ use super::{
 
 use std::io::{Error, ErrorKind};
 
-fn check_headers(headers: &HeaderMap) -> Result<(String, String), Error> {
+pub fn check_headers(headers: &HeaderMap) -> Result<(String, String), Error> {
     let slack_token = match headers.get("token") {
         Some(token) => token.to_str().unwrap().to_string(),
         None => return Err(Error::new(ErrorKind::NotFound, "No token provided")),
@@ -42,6 +42,22 @@ async fn fetch_api(
         None => (),
     }
     json
+}
+
+pub async fn get_raw_fetch_result(
+    client: reqwest::Client,
+    headers: &HeaderMap,
+    path: ApiPaths,
+    options: Option<String>,
+) -> String {
+    let (slack_token, slack_cookie) = match check_headers(headers) {
+        Ok((token, cookie)) => (token, cookie),
+        Err(err) => return err.to_string(),
+    };
+    let res = fetch_api(client, slack_token, slack_cookie, path, options)
+        .await
+        .to_string();
+    res
 }
 
 pub async fn get_response(
