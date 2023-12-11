@@ -29,6 +29,7 @@
 (require 'slackmacs-conversation-list)
 (require 'slackmacs-message)
 (require 'slackmacs-request)
+(require 'slackmacs-websocket)
 
 
 (provide 'slackmacs)
