@@ -8,7 +8,7 @@
 
 (defun slackmacs-get-websocket-updates ()
     (interactive)
-    (slackmacs-request "get-websocket-updates" (lambda (data) (message data)))
+    (slackmacs-request "get-websocket-updates" (lambda (data) (slackmacs/websocket-handle-events data)))
 )
 
 (provide 'slackmacs-websocket)

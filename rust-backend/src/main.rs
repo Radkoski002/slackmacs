@@ -27,7 +27,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
     let listener = TcpListener::bind(addr).await?;
     let request_client = Client::new();
     let is_websocket_running = Arc::new(Mutex::new(false));
-    let websocket_messages = Arc::new(Mutex::new(Vec::<String>::new()));
+    let websocket_messages = Arc::new(Mutex::new(Vec::<serde_json::Value>::new()));
 
     loop {
         let (stream, _) = listener.accept().await?;
@@ -128,7 +128,7 @@ async fn start(
     req: Request<hyper::body::Incoming>,
     client: reqwest::Client,
     is_websocket_running: Arc<Mutex<bool>>,
-    websocket_messages: Arc<Mutex<Vec<String>>>,
+    websocket_messages: Arc<Mutex<Vec<serde_json::Value>>>,
 ) -> Result<Response<BoxBody<Bytes, hyper::Error>>, hyper::Error> {
     let websocket_checker = is_websocket_running.clone();
     let mut is_websocket_running = is_websocket_running.lock().await;
@@ -155,7 +155,8 @@ async fn start(
                 OwnedMessage::Text(text) => {
                     println!("Received: {}", text);
                     let mut websocket_messages = websocket_messages.lock().await;
-                    websocket_messages.push(text);
+                    websocket_messages
+                        .push(serde_json::from_str::<serde_json::Value>(&text).unwrap());
                 }
                 OwnedMessage::Binary(bin) => println!("Received: {:?}", bin),
                 OwnedMessage::Close(_) => {
@@ -176,7 +177,7 @@ async fn start(
 
 async fn get_websocket_updates(
     is_websocket_running: Arc<Mutex<bool>>,
-    websocket_messages: Arc<Mutex<Vec<String>>>,
+    websocket_messages: Arc<Mutex<Vec<serde_json::Value>>>,
 ) -> Result<Response<BoxBody<Bytes, hyper::Error>>, hyper::Error> {
     let is_websocket_running = is_websocket_running.lock().await;
     if !*is_websocket_running {
@@ -184,7 +185,7 @@ async fn get_websocket_updates(
     }
     drop(is_websocket_running);
     let mut websocket_messages = websocket_messages.lock().await;
-    let mut messages = Vec::<String>::new();
+    let mut messages = Vec::<serde_json::Value>::new();
     std::mem::swap(&mut messages, &mut *websocket_messages);
     let messages = serde_json::to_string(&messages).unwrap();
     return Ok(Response::new(full(messages)));
@@ -194,7 +195,7 @@ async fn request_handler(
     req: Request<hyper::body::Incoming>,
     client: reqwest::Client,
     is_websocket_running: Arc<Mutex<bool>>,
-    websocket_messages: Arc<Mutex<Vec<String>>>,
+    websocket_messages: Arc<Mutex<Vec<serde_json::Value>>>,
 ) -> Result<Response<BoxBody<Bytes, hyper::Error>>, hyper::Error> {
     match (req.method(), req.uri().path()) {
         (&Method::GET, "/") => Ok(Response::new(full("Try POSTing data to /echo"))),

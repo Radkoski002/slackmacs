@@ -6,8 +6,14 @@
     (let ((messages-vector (slackmacs/conversation-get-messages data)))
       (dolist (message messages-vector)
         (let ((message-object (slackmacs/message-from-json message)))
-          (insert (propertize (format "%s: " (gethash (slackmacs/message-get-sender message-object) slackmacs_users_map)) 'face 'bold ))
-          (insert (format "%s\n\n" (slackmacs/message-get-text message-object)) )
+          (insert-text-button 
+            (format "%s%s"
+              (propertize (format "%s: " (gethash (slackmacs/message-get-sender message-object) slackmacs_users_map)) 'face 'bold )
+              (propertize (format "%s" (slackmacs/message-get-text message-object)) 'face 'default)
+            )
+            'id (slackmacs/message-get-text message-object)
+          )
+          (insert "\n\n")
         )
       )
     )

@@ -9,6 +9,7 @@ mod helpers;
 mod message;
 mod user;
 mod users_list;
+mod websocket;
 
 // Emacs won't load the module without this.
 emacs::plugin_is_GPL_compatible!();
