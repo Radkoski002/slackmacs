@@ -2,6 +2,7 @@
 (require 'slackmacs-conversation)
 
 (defun get-conversation-list-callback (data)
+  (open-conversations-buffer)
   (if (not (boundp 'slackmacs_conversation_vector))
     (setq slackmacs_conversation_vector (slackmacs/conversation-list-from-json data))
   )
@@ -50,7 +51,6 @@
 
 (defun slackmacs-list-conversations ()
   (interactive)
-  (open-slack-buffer)
   (slackmacs-request 
     "users-list" 
     'get-users-list-callback

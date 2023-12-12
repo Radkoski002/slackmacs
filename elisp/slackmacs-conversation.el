@@ -3,6 +3,7 @@
 
 (defun get-conversation-replies-callback (data)
   (let ((inhibit-read-only t))
+    (clear-current-buffer)
     (insert-text-button 
       (propertize "Back" 'face 'link)
       'action 
@@ -31,8 +32,10 @@
   )
 )
 
+
 (defun get-conversation-history-callback (data) 
   (let ((inhibit-read-only t))
+      (clear-current-buffer)
       (let ((messages-vector (slackmacs/conversation-get-messages-reversed data)))
         (dolist (message messages-vector)
           (let ((message-object (slackmacs/message-from-json message)))
@@ -47,19 +50,22 @@
             (insert "\n\t")
             (if (eq (slackmacs/message-get-reply-count message-object) 0)
               ""
-              (insert-text-button 
-                  (propertize 
-                    (format "Replies: %s" (slackmacs/message-get-reply-count message-object))
-                    'face 'link
-                  )
-                'ts (slackmacs/message-get-ts message-object)
-                'action 
-                (lambda (b) 
-                  (slackmacs-open-replies 
-                    (slackmacs/conversation-get-id-from-buffer-name (buffer-name)) 
-                    (button-get b 'ts)
+              (progn 
+                (insert-text-button 
+                    (propertize 
+                      (format "Replies: %s" (slackmacs/message-get-reply-count message-object))
+                      'face 'link
+                    )
+                  'ts (slackmacs/message-get-ts message-object)
+                  'action 
+                  (lambda (b) 
+                    (slackmacs-open-replies 
+                      (slackmacs/conversation-get-id-from-buffer-name (buffer-name)) 
+                      (button-get b 'ts)
+                    )
                   )
                 )
+                (insert "\n")
               )
             )
             (insert "\n")
@@ -71,26 +77,20 @@
 
 (defun slackmacs-open-conversation (id)
   (open-conversation-buffer id)
-  (let ((inhibit-read-only t))
-    (clear-current-buffer)
-    (slackmacs-request 
-      "conversation-history" 
-      'get-conversation-history-callback
-      `(("channel" . ,id))
-    )
+  (slackmacs-request 
+    "conversation-history" 
+    'get-conversation-history-callback
+    `(("channel" . ,id))
   )
 )
 
 
 (defun slackmacs-open-replies (id ts)
   (open-reply-buffer id ts)
-  (let ((inhibit-read-only t))
-    (clear-current-buffer)
-    (slackmacs-request 
-      "conversation-replies" 
-      'get-conversation-replies-callback
-      `(("channel" . ,id) ("ts" . ,ts))
-    )
+  (slackmacs-request 
+    "conversation-replies" 
+    'get-conversation-replies-callback
+    `(("channel" . ,id) ("ts" . ,ts))
   )
 )
 

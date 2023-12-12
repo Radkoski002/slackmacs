@@ -1,4 +1,4 @@
-(defun open-slack-buffer ()
+(defun open-conversations-buffer ()
   (let ((buffer (get-buffer-create "slackmacs")))
     (switch-to-buffer buffer)
     (read-only-mode)
