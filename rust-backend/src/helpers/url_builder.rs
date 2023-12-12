@@ -1,18 +1,20 @@
 #[allow(dead_code)]
 pub enum ApiPaths {
-    UsersList,
-    ConversationList,
-    SendMessage,
     ConversationHistory,
+    ConversationList,
+    DeleteMessage,
+    SendMessage,
+    UsersList,
     Websocket,
 }
 
 const fn get_api_path(path: ApiPaths) -> &'static str {
     match path {
-        ApiPaths::UsersList => "users.list",
-        ApiPaths::ConversationList => "conversations.list",
-        ApiPaths::SendMessage => "chat.postMessage",
         ApiPaths::ConversationHistory => "conversations.history",
+        ApiPaths::ConversationList => "conversations.list",
+        ApiPaths::DeleteMessage => "chat.delete",
+        ApiPaths::SendMessage => "chat.postMessage",
+        ApiPaths::UsersList => "users.list",
         ApiPaths::Websocket => "rtm.connect",
     }
 }

@@ -2,8 +2,8 @@ use crate::custom_errors::ParamError;
 use emacs::IntoLisp;
 
 fn is_json_ok(json: &serde_json::Value) -> bool {
-    let status = json.get("ok").unwrap().to_string();
-    status == "true"
+    let status = json.get("ok").unwrap().as_bool().unwrap();
+    status
 }
 
 fn parse_json_from_string(json_string: String) -> Result<serde_json::Value, ParamError> {
@@ -18,6 +18,7 @@ fn parse_json_from_string(json_string: String) -> Result<serde_json::Value, Para
 
 pub fn get_vector_from_json(
     json_string: String,
+    // TODO: change this String to some kind of enum
     json_field: String,
     env: &emacs::Env,
 ) -> Result<Vec<emacs::Value>, ParamError> {

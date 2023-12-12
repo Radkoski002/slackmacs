@@ -44,6 +44,7 @@ pub struct User {
     has_2fa: Option<bool>,
 }
 
+// TODO: Try to get rid of this clones
 impl User {
     pub fn get_id(&self) -> String {
         self.id.clone().unwrap()

@@ -10,6 +10,7 @@ pub struct Conversation {
     user: Option<String>,
 }
 
+// TODO: Try to get rid of this clones
 impl Conversation {
     pub fn get_id(&self) -> String {
         self.id.clone().unwrap()

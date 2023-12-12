@@ -17,3 +17,8 @@ fn get_text(message: &BaseMessage) -> Result<String> {
 fn get_sender(message: &BaseMessage) -> Result<String> {
     Ok(message.get_user())
 }
+
+#[defun]
+fn get_ts(message: &BaseMessage) -> Result<String> {
+    Ok(message.get_ts())
+}

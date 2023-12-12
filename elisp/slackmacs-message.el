@@ -1,5 +1,6 @@
 (require 'slackmacs-conversation)
 (require 'slackmacs-request)
+(require 'slackmacs-utils)
 
 (defun slackmacs-message-send ()
   (interactive)
@@ -15,6 +16,19 @@
       )
     )
     (message "No conversation opened")
+  )
+)
+
+(defun slackmacs-message-delete ()
+  (interactive)
+  (let ((message-ts (button-get (button-at (point)) 'ts)))
+    (slackmacs-request 
+      "delete-message" 
+      (lambda (_) 
+        (slackmacs-open-conversation slackmacs_opened_conversation_id)
+      )
+      `(("ts". ,message-ts) ("channel" . ,slackmacs_opened_conversation_id))
+    )
   )
 )
 

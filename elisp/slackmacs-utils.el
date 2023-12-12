@@ -22,7 +22,7 @@
            :user slackmacs-team-domain)
   )
 
-(defun get-from-cursor ()
+(defun get-button-at-cursor ()
   (interactive)
   (message "%s" (button-get (button-at (point)) 'id))
 )

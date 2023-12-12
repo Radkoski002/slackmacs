@@ -11,7 +11,7 @@
               (propertize (format "%s: " (gethash (slackmacs/message-get-sender message-object) slackmacs_users_map)) 'face 'bold )
               (propertize (format "%s" (slackmacs/message-get-text message-object)) 'face 'default)
             )
-            'id (slackmacs/message-get-text message-object)
+            'ts (slackmacs/message-get-ts message-object)
           )
           (insert "\n\n")
         )

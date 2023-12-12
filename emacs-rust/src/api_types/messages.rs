@@ -14,6 +14,7 @@ pub struct BaseMessage {
     ts: Option<String>,
 }
 
+// TODO: Try to get rid of this clones
 impl BaseMessage {
     pub fn get_text(&self) -> String {
         self.text.clone().unwrap()
@@ -21,5 +22,9 @@ impl BaseMessage {
 
     pub fn get_user(&self) -> String {
         self.user.clone().unwrap()
+    }
+
+    pub fn get_ts(&self) -> String {
+        self.ts.clone().unwrap()
     }
 }
