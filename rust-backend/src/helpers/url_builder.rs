@@ -2,6 +2,7 @@
 pub enum ApiPaths {
     ConversationHistory,
     ConversationList,
+    ConversationReplies,
     DeleteMessage,
     EditMessage,
     SendMessage,
@@ -13,6 +14,7 @@ const fn get_api_path(path: ApiPaths) -> &'static str {
     match path {
         ApiPaths::ConversationHistory => "conversations.history",
         ApiPaths::ConversationList => "conversations.list",
+        ApiPaths::ConversationReplies => "conversations.replies",
         ApiPaths::DeleteMessage => "chat.delete",
         ApiPaths::EditMessage => "chat.update",
         ApiPaths::SendMessage => "chat.postMessage",

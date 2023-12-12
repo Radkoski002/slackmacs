@@ -51,8 +51,6 @@
 (defun slackmacs-list-conversations ()
   (interactive)
   (open-slack-buffer)
-  (makunbound 'slackmacs_opened_conversation_id)
-
   (slackmacs-request 
     "users-list" 
     'get-users-list-callback

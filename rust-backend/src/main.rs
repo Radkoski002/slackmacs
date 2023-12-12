@@ -115,6 +115,23 @@ async fn get_conversation_history(
     .await;
 }
 
+async fn get_conversation_replies(
+    req: Request<hyper::body::Incoming>,
+    client: reqwest::Client,
+) -> Result<Response<BoxBody<Bytes, hyper::Error>>, hyper::Error> {
+    let (head, body) = req.into_parts();
+    let headers = &head.headers;
+    let collected_body = body.collect().await.unwrap().to_bytes();
+    let string_body = std::str::from_utf8(&collected_body).unwrap().to_string();
+    return get_response(
+        client,
+        headers,
+        ApiPaths::ConversationReplies,
+        Some(string_body), // Some(string_body),
+    )
+    .await;
+}
+
 async fn test(
     req: Request<hyper::body::Incoming>,
 ) -> Result<Response<BoxBody<Bytes, hyper::Error>>, hyper::Error> {
@@ -236,6 +253,7 @@ async fn request_handler(
         (&Method::POST, "/users-list") => get_users_list(req, client).await,
         (&Method::POST, "/conversation-list") => get_conversation_list(req, client).await,
         (&Method::POST, "/conversation-history") => get_conversation_history(req, client).await,
+        (&Method::POST, "/conversation-replies") => get_conversation_replies(req, client).await,
         (&Method::POST, "/delete-message") => delete_message(req, client).await,
         (&Method::POST, "/edit-message") => edit_message(req, client).await,
         (&Method::POST, "/get-websocket-updates") => {

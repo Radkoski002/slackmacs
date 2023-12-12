@@ -12,6 +12,8 @@ pub struct BaseMessage {
     text: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     ts: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    reply_count: Option<i16>,
 }
 
 // TODO: Try to get rid of this clones
@@ -26,5 +28,12 @@ impl BaseMessage {
 
     pub fn get_ts(&self) -> String {
         self.ts.clone().unwrap()
+    }
+
+    pub fn get_reply_count(&self) -> i16 {
+        match self.reply_count.clone() {
+            Some(count) => count,
+            None => 0,
+        }
     }
 }

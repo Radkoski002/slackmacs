@@ -22,3 +22,8 @@ fn get_sender(message: &BaseMessage) -> Result<String> {
 fn get_ts(message: &BaseMessage) -> Result<String> {
     Ok(message.get_ts())
 }
+
+#[defun]
+fn get_reply_count(message: &BaseMessage) -> Result<i16> {
+    Ok(message.get_reply_count())
+}
