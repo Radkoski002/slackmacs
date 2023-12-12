@@ -21,14 +21,34 @@
 
 (defun slackmacs-message-delete ()
   (interactive)
-  (let ((message-ts (button-get (button-at (point)) 'ts)))
-    (slackmacs-request 
-      "delete-message" 
-      (lambda (_) 
-        (slackmacs-open-conversation slackmacs_opened_conversation_id)
+
+  (if (boundp 'slackmacs_opened_conversation_id)
+    (let ((message-ts (button-get (button-at (point)) 'ts)))
+      (slackmacs-request 
+        "delete-message" 
+        (lambda (_) 
+          (slackmacs-open-conversation slackmacs_opened_conversation_id)
+        )
+        `(("ts". ,message-ts) ("channel" . ,slackmacs_opened_conversation_id))
       )
-      `(("ts". ,message-ts) ("channel" . ,slackmacs_opened_conversation_id))
     )
+    (message "No conversation opened")
+  )
+)
+
+(defun slackmacs-message-edit ()
+  (interactive)
+  (if (boundp 'slackmacs_opened_conversation_id)
+    (let ((text (read-string "> ")) (message-ts (button-get (button-at (point)) 'ts)))
+      (slackmacs-request 
+        "edit-message" 
+        (lambda (_) 
+          (slackmacs-open-conversation slackmacs_opened_conversation_id)
+        )
+        `(("text". ,text) ("ts". ,message-ts) ("channel" . ,slackmacs_opened_conversation_id))
+      )
+    )
+    (message "No conversation opened")
   )
 )
 
