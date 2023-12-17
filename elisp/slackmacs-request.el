@@ -8,9 +8,6 @@
 )
 
 (defun slackmacs-request (path &optional callback req-data)
-  (if (not req-data)
-    (setq req-data '())
-  )
   (request 
     (format "http:/127.0.0.1:3000/%s" path)
     :headers `(("token" . ,(get-token)) ("cookie" . ,(get-cookie)))

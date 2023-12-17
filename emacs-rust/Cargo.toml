@@ -15,6 +15,7 @@ serde = { version = "1.0.174", features = ["derive"] }
 serde_json = "1.0.103"
 dotenv = "0.15.0"
 websocket = "0.27.0"
+itertools = "0.12.0"
 
 [dev-dependencies]
 emacs-rs-module = "0.18.0"

@@ -1,4 +1,10 @@
+use std::collections::HashMap;
+
 use serde::{Deserialize, Serialize};
+
+use super::BaseMessage;
+
+type MessageMap = HashMap<String, BaseMessage>;
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Conversation {
@@ -8,9 +14,9 @@ pub struct Conversation {
     name: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     user: Option<String>,
+    pub messages: Option<MessageMap>,
 }
 
-// TODO: Try to get rid of this clones
 impl Conversation {
     pub fn get_id(&self) -> String {
         self.id.clone().unwrap()
