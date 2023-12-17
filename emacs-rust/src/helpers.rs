@@ -1,5 +1,4 @@
 use crate::custom_errors::ParamError;
-use emacs::IntoLisp;
 
 fn is_json_ok(json: &serde_json::Value) -> bool {
     let status = json.get("ok").unwrap().as_bool().unwrap();
@@ -58,42 +57,6 @@ where
                 for message in messages {
                     let parsed_value = serde_json::from_value::<T>(message.clone()).unwrap();
                     final_vec.push(parsed_value)
-                }
-                return Ok(final_vec);
-            }
-            _ => {
-                let error_message = "Value of this field is not an array".to_string();
-                return Err(ParamError {
-                    message: error_message,
-                });
-            }
-        },
-        None => {
-            let error_message = "This field doesn't exits".to_string();
-            return Err(ParamError {
-                message: error_message,
-            });
-        }
-    }
-}
-
-pub fn get_vector_from_json(
-    json_string: String,
-    // TODO: change this String to some kind of enum
-    json_field: String,
-    env: &emacs::Env,
-) -> Result<Vec<emacs::Value>, ParamError> {
-    let parsed_json = parse_json_from_string(json_string);
-    let correct_json = match parsed_json {
-        Ok(parsed_json) => parsed_json,
-        Err(error) => return Err(error),
-    };
-    match correct_json.get(json_field) {
-        Some(messages) => match messages {
-            serde_json::Value::Array(messages) => {
-                let mut final_vec = vec![];
-                for message in messages {
-                    final_vec.push(message.to_string().into_lisp(env).unwrap())
                 }
                 return Ok(final_vec);
             }

@@ -4,10 +4,7 @@
 
 (defun create-conversation-button (text id)
   (insert-text-button 
-    (format 
-      "%s\n" 
-      text
-    )
+    (format "%s\n" text)
     'id id
     'action (lambda (b) (slackmacs-open-conversation (button-get b 'id)))
   )
