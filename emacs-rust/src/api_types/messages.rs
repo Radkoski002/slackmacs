@@ -58,7 +58,7 @@ pub struct BaseMessage {
     #[serde(skip_serializing_if = "Option::is_none")]
     ts: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    reply_count: Option<i16>,
+    pub reply_count: Option<i16>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub replies: Option<ReplyMap>,
 }

@@ -3,6 +3,22 @@
 (require 'slackmacs-request)
 (require 'slackmacs-utils)
 
+(defun slackmacs-send-reply-in-thread ()
+  (interactive)
+  (seq-let (name conversation_id) (split-string (buffer-name) "-")
+    (slackmacs/conversation-check-buffer-name name)
+    (let ((text (read-string "> ")) (parent_ts (button-get (button-at (point)) 'ts)))
+      (slackmacs-request 
+        "send-message" 
+        (lambda (data) 
+            (slackmacs/message-reply-add slackmacs_instance data conversation_id parent_ts)
+          )
+        `(("text". ,text) ("channel" . ,conversation_id) ("thread_ts" . ,parent_ts))
+      )
+    )
+  )
+)
+
 (defun slackmacs-message-send ()
   (interactive)
   (seq-let (name conversation_id parent_ts) (split-string (buffer-name) "-")

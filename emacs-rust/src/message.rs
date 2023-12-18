@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use emacs::{defun, Env, Result};
 
 use crate::{
@@ -45,8 +47,18 @@ fn reply_add(
                 .unwrap();
             let messages = conversation.messages.as_mut().unwrap();
             let parent_message = messages.get_mut(parent_ts.as_str()).unwrap();
-            let replies = parent_message.replies.as_mut().unwrap();
+            let replies = match &mut parent_message.replies {
+                Some(replies) => replies,
+                None => {
+                    parent_message.replies = Some(HashMap::new());
+                    parent_message.replies.as_mut().unwrap()
+                }
+            };
             replies.insert(message.get_ts(), message);
+            match &mut parent_message.reply_count {
+                Some(reply_count) => *reply_count += 1,
+                None => parent_message.reply_count = Some(1),
+            };
         }
         Err(error) => return env.signal(api_error, (error.message,))?,
     }
@@ -116,5 +128,16 @@ fn reply_delete(
     let parent_message = messages.get_mut(parent_ts.as_str()).unwrap();
     let replies = parent_message.replies.as_mut().unwrap();
     replies.remove(ts.as_str());
+    match &mut parent_message.reply_count {
+        Some(reply_count) => {
+            if *reply_count == 1 {
+                parent_message.reply_count = None;
+                parent_message.replies = None;
+            } else {
+                *reply_count -= 1;
+            }
+        }
+        None => (),
+    };
     Ok(())
 }

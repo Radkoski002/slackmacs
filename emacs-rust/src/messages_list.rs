@@ -51,7 +51,7 @@ fn replies_from_json(
     let json_clone = json.clone();
     let reply_vec = get_rust_vector_from_json::<ReplyMessage>(json_clone, "messages".to_string());
     match reply_vec {
-        Ok(rust_vector) => {
+        Ok(reply_vector) => {
             let conversation = slack_instance
                 .conversations
                 .get_mut(conversation_id.as_str())
@@ -63,13 +63,13 @@ fn replies_from_json(
                 .get_mut(parent_ts.as_str())
                 .unwrap();
             let replies = match parent_message.replies.as_mut() {
-                Some(_) => return Ok(()),
+                Some(replies) => replies,
                 None => {
                     parent_message.replies = Some(HashMap::new());
                     parent_message.replies.as_mut().unwrap()
                 }
             };
-            for reply in rust_vector.iter() {
+            for reply in reply_vector.iter() {
                 replies.insert(reply.get_ts(), reply.clone());
             }
         }

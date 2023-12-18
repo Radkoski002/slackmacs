@@ -73,10 +73,5 @@
     (makunbound 'slackmacs-rust-backend)
 )
 
-(defun process-test ()
-    (interactive)
-    (start-process "test" "*test*" "ls" "-ahl")
-)
-
 (provide 'slackmacs)
 ;;; slackmacs.el ends here
