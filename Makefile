@@ -2,16 +2,17 @@ VERSION:=0.0.1
 PACKAGE_NAME:=slackmacs-$(VERSION)
 PACKAGE_DIR:=/tmp/$(PACKAGE_NAME)
 
-all: clean package build-backend
+all: clean package 
 
 build-backend:
 	cargo build --manifest-path ./rust-backend/Cargo.toml;
+	cp ./rust-backend/target/debug/slackmacs-rust-backend ./elisp/slackmacs-rust-backend
 
 build:
 	cargo build --manifest-path ./emacs-rust/Cargo.toml;
 	cp ./emacs-rust/target/debug/libslackmacs_module_rs.so ./elisp/slackmacs-module-rs.so
 
-package: build 
+package: build build-backend
 	mkdir $(PACKAGE_DIR)
 	cp -r ./elisp/* $(PACKAGE_DIR)
 	tar cvf ./$(PACKAGE_NAME).tar --exclude="*#" --exclude="*~" -C $(PACKAGE_DIR)/.. $(PACKAGE_NAME)

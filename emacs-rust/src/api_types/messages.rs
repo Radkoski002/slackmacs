@@ -2,6 +2,8 @@ use std::collections::HashMap;
 
 use serde::{Deserialize, Serialize};
 
+use super::MessageEvent;
+
 type ReplyMap = HashMap<String, ReplyMessage>;
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct ReplyMessage {
@@ -13,8 +15,6 @@ pub struct ReplyMessage {
     pub text: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     thread_ts: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    parent_user_id: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     ts: Option<String>,
 }
@@ -30,6 +30,18 @@ impl ReplyMessage {
 
     pub fn get_ts(&self) -> String {
         self.ts.clone().unwrap()
+    }
+}
+
+impl From<MessageEvent> for ReplyMessage {
+    fn from(message_event: MessageEvent) -> Self {
+        ReplyMessage {
+            r#type: Some(message_event.r#type),
+            user: message_event.user,
+            text: message_event.text,
+            thread_ts: message_event.thread_ts,
+            ts: Some(message_event.ts),
+        }
     }
 }
 
@@ -69,6 +81,20 @@ impl BaseMessage {
         match self.reply_count.clone() {
             Some(count) => count,
             None => 0,
+        }
+    }
+}
+
+impl From<MessageEvent> for BaseMessage {
+    fn from(message_event: MessageEvent) -> Self {
+        BaseMessage {
+            r#type: Some(message_event.r#type),
+            channel: Some(message_event.channel),
+            user: message_event.user,
+            text: message_event.text,
+            ts: Some(message_event.ts),
+            reply_count: Some(0),
+            replies: Some(HashMap::new()),
         }
     }
 }

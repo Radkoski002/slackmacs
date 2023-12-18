@@ -32,5 +32,51 @@
 (require 'slackmacs-websocket)
 
 
+(defun slackmacs-start ()
+    (interactive)
+    (if (not (boundp 'slackmacs-rust-backend))
+        (progn
+            (setq slackmacs-rust-backend 
+                (start-process "slackmacs-rust-backend" "*slackmacs-backend*" 
+                    "find" 
+                    ".emacs.d/elpa" 
+                    "-name" 
+                    "slackmacs-rust-backend" 
+                    "-exec" 
+                    "{}" 
+                    ";"
+                )
+            )
+            (slackmacs-request "start" (lambda (data) (message data)))
+        )
+    )
+    (if (not (boundp 'slackmacs_instance))
+        (setq slackmacs_instance (slackmacs/start))
+    )
+    (slackmacs-force-refresh-conversation-list)
+    (if (not (boundp 'slackmacs_websocket_handler))
+        (setq slackmacs_websocket_handler (run-at-time t 3 'slackmacs-handle-websocket))
+    )
+)
+
+(defun slackmacs-websocket-close ()
+    (interactive)
+    (cancel-timer slackmacs_websocket_handler)
+    (makunbound 'slackmacs_websocket_handler)
+)
+
+(defun slackmacs-close ()
+    (interactive)
+    (slackmacs-websocket-close)
+    (kill-process slackmacs-rust-backend)
+    (makunbound 'slackmacs_instance)
+    (makunbound 'slackmacs-rust-backend)
+)
+
+(defun process-test ()
+    (interactive)
+    (start-process "test" "*test*" "ls" "-ahl")
+)
+
 (provide 'slackmacs)
 ;;; slackmacs.el ends here

@@ -54,18 +54,21 @@
   (insert "\n\n")
 )
 
-(defun slackmacs-refresh-conversation (id)
-  (let ((inhibit-read-only t))
+(defun slackmacs-update-conversation (id)
+  (let ((inhibit-read-only t) (pos (point)))
     (clear-current-buffer)
     (slackmacs/messages-list-create-message-buttons slackmacs_instance id 'create-message-button) 
+    (goto-char pos)
   )
+
 )
 
-(defun slackmacs-refresh-replies (id ts)
-  (let ((inhibit-read-only t))
+(defun slackmacs-update-replies (id ts)
+  (let ((inhibit-read-only t) (pos (point)))
     (clear-current-buffer)
     (create-back-button)
     (slackmacs/messages-list-create-reply-buttons slackmacs_instance id ts 'create-reply-button)
+    (goto-char pos)
   )
 )
 
@@ -76,20 +79,18 @@
     (parent_ts (slackmacs/conversation-get-ts-from-buffer-name (buffer-name)))
     )
       (slackmacs/messages-list-replies-from-json data conversation_id parent_ts slackmacs_instance)
-      (slackmacs-refresh-replies conversation_id parent_ts)
+      (slackmacs-update-replies conversation_id parent_ts)
   )
 )
-
 
 (defun get-conversation-history-callback (data) 
   (let ((conversation_id (slackmacs/conversation-get-id-from-buffer-name (buffer-name))))
     (slackmacs/messages-list-from-json data conversation_id slackmacs_instance)
-    (slackmacs-refresh-conversation conversation_id)
+    (slackmacs-update-conversation conversation_id)
   )
 )
 
-(defun slackmacs-open-conversation (id)
-  (open-conversation-buffer id)
+(defun slackmacs-force-refresh-conversation (id)
   (slackmacs-request 
     "conversation-history" 
     'get-conversation-history-callback
@@ -97,13 +98,40 @@
   )
 )
 
-(defun slackmacs-open-replies (id ts)
-  (open-reply-buffer id ts)
+(defun slackmacs-force-refresh-replies (id ts)
   (slackmacs-request 
     "conversation-replies" 
     'get-conversation-replies-callback
     `(("channel" . ,id) ("ts" . ,ts))
   )
+)
+
+(defun slackmacs-force-refresh-messages ()
+  (interactive)
+  (dolist (conversation-buf (match-buffers "conversation-"))
+      (with-current-buffer conversation-buf
+          (seq-let (_ channel-id) (split-string (buffer-name) "-")
+              (slackmacs-force-refresh-conversation channel-id)
+          )
+      )
+  )
+  (dolist (reply-buf (match-buffers "reply-"))
+      (with-current-buffer reply-buf
+          (seq-let (_ channel-id ts) (split-string (buffer-name) "-")
+              (slackmacs-force-refresh-replies channel-id ts)
+          )
+      )
+  )
+)
+
+(defun slackmacs-open-conversation (id)
+  (open-conversation-buffer id)
+  (slackmacs-force-refresh-conversation id)
+)
+
+(defun slackmacs-open-replies (id ts)
+  (open-reply-buffer id ts)
+  (slackmacs-force-refresh-replies id ts)
 )
 
 (provide 'slackmacs-conversation)

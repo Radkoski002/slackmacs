@@ -1,14 +1,23 @@
 (require 'slackmacs-request)
 
-(defun slackmacs-start-websocket ()
-    (interactive)
-    (slackmacs-request "start" (lambda (data) (message data)))
-)
-
-
-(defun slackmacs-get-websocket-updates ()
-    (interactive)
-    (slackmacs-request "get-websocket-updates" (lambda (data) (slackmacs/websocket-handle-events data)))
+(defun slackmacs-handle-websocket ()
+    (slackmacs-request 
+        "get-websocket-updates" 
+        (lambda (data) 
+            (slackmacs/websocket-handle-events data slackmacs_instance)
+            (seq-let (name conversation_id parent_ts) (split-string (buffer-name) "-")
+                (if (equal name "conversation")
+                    (progn
+                        (message "%s" name)
+                        (slackmacs-update-conversation conversation_id)
+                    )
+                )
+                (if (equal name "reply")
+                    (slackmacs-update-replies conversation_id parent_ts)
+                )
+            )
+        )
+    )
 )
 
 (provide 'slackmacs-websocket)

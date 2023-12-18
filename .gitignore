@@ -9,5 +9,6 @@
 /**/*.py
 /**/benchmark.txt
 /elisp/slackmacs-module-rs.so
+/elisp/slackmacs-rust-backend
 /**/*.tar
 code_examples

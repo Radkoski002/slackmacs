@@ -14,11 +14,11 @@
           (if parent_ts
             (progn 
               (slackmacs/message-reply-add slackmacs_instance data conversation_id parent_ts)
-              (slackmacs-refresh-replies conversation_id parent_ts)
+              (slackmacs-update-replies conversation_id parent_ts)
             )
             (progn
               (slackmacs/message-add slackmacs_instance data conversation_id)
-              (slackmacs-refresh-conversation conversation_id)
+              (slackmacs-update-conversation conversation_id)
             ) 
           )
         )
@@ -42,11 +42,11 @@
           (if parent_ts
             (progn 
               (slackmacs/message-reply-delete slackmacs_instance conversation_id message_ts parent_ts)
-              (slackmacs-refresh-replies conversation_id parent_ts)
+              (slackmacs-update-replies conversation_id parent_ts)
             )
             (progn 
               (slackmacs/message-delete slackmacs_instance conversation_id message_ts)
-              (slackmacs-refresh-conversation conversation_id)
+              (slackmacs-update-conversation conversation_id)
             )
           )
         )
@@ -73,11 +73,11 @@
             (if parent_ts
               (progn 
                 (slackmacs/message-reply-edit slackmacs_instance text conversation_id message_ts parent_ts)
-                (slackmacs-refresh-replies conversation_id parent_ts)
+                (slackmacs-update-replies conversation_id parent_ts)
               )
               (progn 
                 (slackmacs/message-edit slackmacs_instance text conversation_id message_ts)
-                (slackmacs-refresh-conversation conversation_id)
+                (slackmacs-update-conversation conversation_id)
               )
             )
           )
