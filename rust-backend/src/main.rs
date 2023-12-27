@@ -88,14 +88,53 @@ async fn get_conversation_list(
     client: reqwest::Client,
 ) -> Result<Response<BoxBody<Bytes, hyper::Error>>, hyper::Error> {
     let headers = req.headers();
-    let conversation_types = "types=public_channel,private_channel,mpim,im".to_string();
-    return get_response(
-        client,
+    let conversation_types =
+        "types=public_channel,private_channel,mpim,im&exclude_archived=true&limit=999".to_string();
+    let raw_response = get_raw_fetch_result(
+        client.clone(),
         headers,
         ApiPaths::ConversationList,
         Some(conversation_types),
     )
     .await;
+    let json = serde_json::from_str::<serde_json::Value>(&raw_response).unwrap();
+    if json["response_metadata"]["next_cursor"] == "" {
+        return Ok(Response::new(full(raw_response)));
+    }
+    let mut cursor = json["response_metadata"]["next_cursor"]
+        .as_str()
+        .unwrap()
+        .to_string();
+    let mut channel_list = json["channels"].as_array().unwrap().to_vec();
+    loop {
+        println!("cursor: {}", cursor);
+        let conversation_types =
+            format!("types=public_channel,private_channel,mpim,im&exclude_archived=true&limit=999&cursor={}", cursor);
+        let raw_response = get_raw_fetch_result(
+            client.clone(),
+            headers,
+            ApiPaths::ConversationList,
+            Some(conversation_types),
+        )
+        .await;
+        let json = serde_json::from_str::<serde_json::Value>(&raw_response).unwrap();
+        if json["response_metadata"]["next_cursor"] == "" {
+            channel_list.extend(json["channels"].as_array().unwrap().to_vec());
+            break;
+        }
+        cursor = json["response_metadata"]["next_cursor"]
+            .as_str()
+            .unwrap()
+            .to_string();
+        channel_list.extend(json["channels"].as_array().unwrap().to_vec());
+    }
+
+    let result = serde_json::json!({
+        "ok": true,
+        "channels": channel_list,
+    })
+    .to_string();
+    return Ok(Response::new(full(result)));
 }
 
 async fn get_conversation_history(

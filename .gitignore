@@ -12,3 +12,4 @@
 /elisp/slackmacs-rust-backend
 /**/*.tar
 code_examples
+/**/lcov.info

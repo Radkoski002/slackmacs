@@ -1,5 +1,5 @@
 (defun open-conversations-buffer ()
-  (let ((buffer (get-buffer-create "slackmacs")))
+  (let ((buffer (get-buffer-create "conversations")))
     (switch-to-buffer buffer)
     (read-only-mode)
     ))
@@ -24,7 +24,7 @@
       )))
 
 (defun clear-slack-buffer ()
-  (let ((buffer (get-buffer-create "slackmacs")))
+  (let ((buffer (get-buffer-create "conversations")))
     (with-current-buffer buffer
       (erase-buffer)
       )))

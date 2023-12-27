@@ -2,25 +2,31 @@
 (require 'slackmacs-utils)
 (require 'slackmacs-conversation)
 
+(defun create-conversation-header (text)
+  (insert (propertize (format "%s" text) 'face 'bold))
+  (insert "\n")
+)
+
 (defun create-conversation-button (text id)
   (insert-text-button 
-    (format "%s\n" text)
+    (format "%s" text)
     'id id
     'action (lambda (b) (slackmacs-open-conversation (button-get b 'id)))
   )
+  (insert "\n")
 )
 
 (defun get-cached-conversation-list ()
   (open-conversations-buffer)
   (let ((inhibit-read-only t))
     (clear-slack-buffer)
-    (slackmacs/conversation-list-create-buttons slackmacs_instance 'create-conversation-button)
+    (slackmacs/conversation-list-create-buttons slackmacs_instance 'create-conversation-button 'create-conversation-header)
   )
 )
 
 (defun get-conversation-list-callback (data)
   (slackmacs/conversation-list-from-json data slackmacs_instance)
-  (dolist (buf (match-buffers "slackmacs"))
+  (dolist (buf (match-buffers "conversations"))
     (with-current-buffer buf
       (let ((inhibit-read-only t))
         (clear-slack-buffer)

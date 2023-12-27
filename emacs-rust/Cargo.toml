@@ -3,19 +3,13 @@ name = "slackmacs-module-rs"
 version = "0.1.0"
 edition = "2021"
 authors = ["Radosław Kostrzewski <radoslaw.kostrzewski@protonmail.com>"]
+include = ["Cargo.toml", "README.md", "src/**/*"]
 
 [lib]
 crate-type = ["cdylib"]
 
 [dependencies]
 emacs = "0.18"
-tokio = { version = "1.29.1", features = ["full"] }
-reqwest = { version = "0.11.18", features = ["json", "blocking"] }
 serde = { version = "1.0.174", features = ["derive"] }
 serde_json = "1.0.103"
-dotenv = "0.15.0"
-websocket = "0.27.0"
 itertools = "0.12.0"
-
-[dev-dependencies]
-emacs-rs-module = "0.18.0"

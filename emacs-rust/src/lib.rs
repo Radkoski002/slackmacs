@@ -1,17 +1,20 @@
 use api_types::Slack;
 use emacs::{defun, Env, Result};
 
-mod api_types;
+pub mod api_types;
 
 mod conversation;
 mod conversation_list;
 mod custom_errors;
-mod helpers;
+pub mod helpers;
 mod message;
 mod messages_list;
 mod user;
 mod users_list;
 mod websocket;
+
+#[cfg(test)]
+mod tests;
 
 // Emacs won't load the module without this.
 emacs::plugin_is_GPL_compatible!();
@@ -27,6 +30,6 @@ fn init(_: &Env) -> Result<()> {
 }
 
 #[defun(user_ptr)]
-fn start() -> Result<Slack> {
+pub fn start() -> Result<Slack> {
     Ok(Slack::default())
 }

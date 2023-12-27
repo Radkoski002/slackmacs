@@ -8,8 +8,9 @@ fn is_json_ok(json: &serde_json::Value) -> bool {
 fn parse_json_from_string(json_string: String) -> Result<serde_json::Value, ParamError> {
     let parsed_json = serde_json::from_str::<serde_json::Value>(&json_string).unwrap();
     if !is_json_ok(&parsed_json) {
+        let error_message = parsed_json.get("error").unwrap();
         return Err(ParamError {
-            message: parsed_json.get("error").unwrap().to_string(),
+            message: serde_json::from_value::<String>(error_message.clone()).unwrap(),
         });
     }
     Ok(parsed_json)
