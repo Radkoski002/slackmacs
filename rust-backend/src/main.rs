@@ -23,7 +23,7 @@ mod helpers;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
-    let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
+    let addr = SocketAddr::from(([127, 0, 0, 1], 50000));
     let listener = TcpListener::bind(addr).await?;
     let request_client = Client::new();
     let is_websocket_running = Arc::new(Mutex::new(false));

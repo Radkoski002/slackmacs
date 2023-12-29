@@ -34,28 +34,29 @@
 
 (defun slackmacs-start ()
     (interactive)
-    (if (not (boundp 'slackmacs-rust-backend))
-        (progn
-            (setq slackmacs-rust-backend 
-                (start-process "slackmacs-rust-backend" "*slackmacs-backend*" 
-                    "find" 
-                    ".emacs.d/elpa" 
-                    "-name" 
-                    "slackmacs-rust-backend" 
-                    "-exec" 
-                    "{}" 
-                    ";"
-                )
+    (if (not (boundp 'slackmacs_rust_backend))
+        (setq slackmacs_rust_backend 
+            (start-process "slackmacs-rust-backend" "*slackmacs-backend*" 
+                "find" 
+                ".emacs.d/elpa" 
+                "-name" 
+                "slackmacs-rust-backend" 
+                "-exec" 
+                "{}" 
+                ";"
             )
-            (slackmacs-request "start" (lambda (data) (message data)))
         )
     )
+    (sleep-for 0 100)
     (if (not (boundp 'slackmacs_instance))
         (setq slackmacs_instance (slackmacs/start))
     )
     (slackmacs-force-refresh-conversation-list)
     (if (not (boundp 'slackmacs_websocket_handler))
-        (setq slackmacs_websocket_handler (run-at-time t 3 'slackmacs-handle-websocket))
+        (progn
+            (slackmacs-request "start" (lambda (data) (message data)))
+            (setq slackmacs_websocket_handler (run-at-time t 3 'slackmacs-handle-websocket))
+        )
     )
 )
 
@@ -68,9 +69,10 @@
 (defun slackmacs-close ()
     (interactive)
     (slackmacs-websocket-close)
-    (kill-process slackmacs-rust-backend)
+    (delete-process "*slackmacs-backend*")
+    (kill-buffer "*slackmacs-backend*")
     (makunbound 'slackmacs_instance)
-    (makunbound 'slackmacs-rust-backend)
+    (makunbound 'slackmacs_rust_backend)
 )
 
 (provide 'slackmacs)

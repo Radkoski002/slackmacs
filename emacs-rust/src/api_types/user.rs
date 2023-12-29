@@ -51,10 +51,10 @@ impl User {
     }
 
     pub fn get_name(&self) -> String {
-        self.name.clone().unwrap()
+        self.name.clone().unwrap_or(self.get_id())
     }
 
     pub fn get_real_name(&self) -> String {
-        self.real_name.clone().unwrap()
+        self.real_name.clone().unwrap_or(self.get_name())
     }
 }

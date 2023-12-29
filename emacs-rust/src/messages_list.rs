@@ -20,15 +20,25 @@ fn from_json(
     let message_vec = get_rust_vector_from_json::<BaseMessage>(json_clone, "messages".to_string());
     match message_vec {
         Ok(rust_vector) => {
-            let conversation = slack_instance
+            let conversation = match slack_instance
                 .conversations
                 .get_mut(conversation_id.as_str())
-                .unwrap();
+            {
+                Some(conversation) => conversation,
+                None => {
+                    let error_message = "Conversation doesn't exist".to_string();
+                    env.signal(api_error, (error_message,))?;
+                    return Ok(());
+                }
+            };
             let messages = match conversation.messages.as_mut() {
                 Some(_) => return Ok(()),
                 None => {
                     conversation.messages = Some(HashMap::new());
-                    conversation.messages.as_mut().unwrap()
+                    match conversation.messages.as_mut() {
+                        Some(messages) => messages,
+                        None => return Ok(()),
+                    }
                 }
             };
             for message in rust_vector.iter() {
@@ -52,10 +62,17 @@ fn replies_from_json(
     let reply_vec = get_rust_vector_from_json::<ReplyMessage>(json_clone, "messages".to_string());
     match reply_vec {
         Ok(reply_vector) => {
-            let conversation = slack_instance
+            let conversation = match slack_instance
                 .conversations
                 .get_mut(conversation_id.as_str())
-                .unwrap();
+            {
+                Some(conversation) => conversation,
+                None => {
+                    let error_message = "Conversation doesn't exist".to_string();
+                    env.signal(api_error, (error_message,))?;
+                    return Ok(());
+                }
+            };
             let parent_message = conversation
                 .messages
                 .as_mut()
@@ -84,15 +101,21 @@ fn create_message_buttons(
     conversation_id: String,
     create_callback: Value,
 ) -> Result<()> {
-    let conversation = slack_instance
-        .conversations
-        .get(conversation_id.as_str())
-        .unwrap();
-    let messages = conversation.messages.as_ref().unwrap();
+    let conversation = match slack_instance.conversations.get(conversation_id.as_str()) {
+        Some(conversation) => conversation,
+        None => return Ok(()),
+    };
+    let messages = match conversation.messages.as_ref() {
+        Some(messages) => messages,
+        None => return Ok(()),
+    };
     for key in messages.keys().sorted() {
-        let message = messages.get(key).unwrap();
+        let message = match messages.get(key) {
+            Some(message) => message,
+            None => continue,
+        };
         let sender = match slack_instance.users.get(message.get_user().as_str()) {
-            Some(user) => user.get_name(),
+            Some(user) => user.get_real_name(),
             None => message.get_user(),
         };
         let text = message.get_text();
@@ -120,7 +143,7 @@ fn create_reply_buttons(
     for key in replies.keys().sorted() {
         let message = replies.get(key).unwrap();
         let sender = match slack_instance.users.get(message.get_user().as_str()) {
-            Some(user) => user.get_name(),
+            Some(user) => user.get_real_name(),
             None => message.get_user(),
         };
         let text = message.get_text();
