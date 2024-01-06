@@ -1,0 +1,45 @@
+Name: Send New Message
+
+=-=
+Jane Doe: hello
+    Replies: 2
+
+Slackbot: Hello!
+
+John Doe: hello
+
+Slackbot: Greetings!
+
+=-=
+Jane Doe: hello
+    Replies: 2
+
+Slackbot: Hello!
+
+John Doe: hello
+
+Slackbot: Greetings!
+
+John Doe: new message
+
+=-=-=
+
+
+Name: Send New Message (2)
+
+=-=
+
+=-=
+Jane Doe: hello
+    Replies: 2
+
+Slackbot: Hello!
+
+John Doe: hello
+
+Slackbot: Greetings!
+
+John Doe: new message
+
+=-=-=
+

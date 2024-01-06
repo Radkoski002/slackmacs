@@ -1,0 +1,15 @@
+[
+    {
+        "type": "message",
+        "channel": "C00000001",
+        "user": "U00000001",
+        "text": "edited message",
+        "ts": "1703853029.543409",
+        "subtype": "message_changed",
+        "message": {
+            "user": "U00000001",
+            "text": "edited message",
+            "ts": "1703853038.000000"
+        }
+    }
+]

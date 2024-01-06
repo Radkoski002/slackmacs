@@ -1,0 +1,29 @@
+{
+    "messages": [
+        {
+            "reply_count": 2,
+            "text": "hello",
+            "thread_ts": "1698435687.161709",
+            "ts": "1698435687.161709",
+            "type": "message",
+            "user": "U00000002"
+        },
+        {
+            "parent_user_id": "U00000002",
+            "text": "hey",
+            "thread_ts": "1698435687.161709",
+            "ts": "1702388734.707549",
+            "type": "message",
+            "user": "U00000001"
+        },
+        {
+            "parent_user_id": "U00000002",
+            "text": "how are you?",
+            "thread_ts": "1698435687.161709",
+            "ts": "1702822814.449089",
+            "type": "message",
+            "user": "U00000002"
+        }
+    ],
+    "ok": true
+}

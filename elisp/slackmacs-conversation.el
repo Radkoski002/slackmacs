@@ -9,10 +9,11 @@
     ) 
     'text text 'ts ts
   )
-  (insert "\n\t")
+  (insert "\n")
   (if (eq reply_count 0)
     ""
     (progn 
+      (indent-to 4)
       (insert-text-button 
         (propertize (format "Replies: %s" reply_count) 'face 'link)
         'ts ts

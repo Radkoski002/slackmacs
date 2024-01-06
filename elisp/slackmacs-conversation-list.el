@@ -30,7 +30,7 @@
     (with-current-buffer buf
       (let ((inhibit-read-only t))
         (clear-slack-buffer)
-        (slackmacs/conversation-list-create-buttons slackmacs_instance 'create-conversation-button)
+        (slackmacs/conversation-list-create-buttons slackmacs_instance 'create-conversation-button 'create-conversation-header)
       )
     )
   )

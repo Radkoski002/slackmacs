@@ -75,7 +75,6 @@ fn create_buttons(
         for (name, id) in users {
             create_callback.call((name, id))?;
         }
-        header_callback.call(("".to_string(),))?;
     }
     Ok(())
 }

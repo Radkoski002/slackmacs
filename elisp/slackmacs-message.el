@@ -3,7 +3,7 @@
 (require 'slackmacs-request)
 (require 'slackmacs-utils)
 
-(defun slackmacs-send-reply-in-thread ()
+(defun slackmacs-reply-message ()
   (interactive)
   (seq-let (name conversation_id) (split-string (buffer-name) "-")
     (slackmacs/conversation-check-buffer-name name)
@@ -19,7 +19,7 @@
   )
 )
 
-(defun slackmacs-message-send ()
+(defun slackmacs-send-message ()
   (interactive)
   (seq-let (name conversation_id parent_ts) (split-string (buffer-name) "-")
     (slackmacs/conversation-check-buffer-name name)
@@ -47,7 +47,7 @@
   )
 )
 
-(defun slackmacs-message-delete ()
+(defun slackmacs-delete-message ()
   (interactive)
   (seq-let (name conversation_id parent_ts) (split-string (buffer-name) "-")
     (slackmacs/conversation-check-buffer-name name)
@@ -75,7 +75,7 @@
   )
 )
 
-(defun slackmacs-message-edit ()
+(defun slackmacs-edit-message ()
   (interactive)
   (seq-let (name conversation_id parent_ts) (split-string (buffer-name) "-")
     (slackmacs/conversation-check-buffer-name name)

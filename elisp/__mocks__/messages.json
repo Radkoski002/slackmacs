@@ -1,0 +1,31 @@
+{
+    "messages": [
+        {
+            "text": "Greetings!",
+            "ts": "1703853029.543409",
+            "type": "message",
+            "user": "USLACKBOT"
+        },
+        {
+            "text": "hello",
+            "ts": "1703853029.181129",
+            "type": "message",
+            "user": "U00000001"
+        },
+        {
+            "text": "Hello!",
+            "ts": "1698435687.364929",
+            "type": "message",
+            "user": "USLACKBOT"
+        },
+        {
+            "reply_count": 2,
+            "text": "hello",
+            "thread_ts": "1698435687.161709",
+            "ts": "1698435687.161709",
+            "type": "message",
+            "user": "U00000002"
+        }
+    ],
+    "ok": true
+}

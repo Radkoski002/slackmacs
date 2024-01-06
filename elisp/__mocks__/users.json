@@ -1,0 +1,49 @@
+{
+    "members": [
+        {
+            "deleted": false,
+            "has_2fa": false,
+            "id": "U00000001",
+            "is_admin": true,
+            "is_app_user": false,
+            "is_bot": false,
+            "is_email_confirmed": true,
+            "is_owner": true,
+            "is_primary_owner": true,
+            "is_restricted": false,
+            "is_ultra_restricted": false,
+            "name": "john.doe",
+            "real_name": "John Doe"
+        },
+        {
+            "deleted": false,
+            "has_2fa": false,
+            "id": "U00000002",
+            "is_admin": true,
+            "is_app_user": false,
+            "is_bot": false,
+            "is_email_confirmed": true,
+            "is_owner": true,
+            "is_primary_owner": true,
+            "is_restricted": false,
+            "is_ultra_restricted": false,
+            "name": "jane.doe",
+            "real_name": "Jane Doe"
+        },
+        {
+            "deleted": false,
+            "id": "USLACKBOT",
+            "is_admin": false,
+            "is_app_user": false,
+            "is_bot": false,
+            "is_email_confirmed": false,
+            "is_owner": false,
+            "is_primary_owner": false,
+            "is_restricted": false,
+            "is_ultra_restricted": false,
+            "name": "slackbot",
+            "real_name": "Slackbot"
+        }
+    ],
+    "ok": true
+}

@@ -1,42 +1,51 @@
 use crate::custom_errors::ParamError;
 
-fn is_json_ok(json: &serde_json::Value) -> bool {
+fn is_json_ok(json: &serde_json::Value) -> Result<bool, ParamError> {
     let status = match json.get("ok") {
         Some(value) => match value {
             serde_json::Value::Bool(status) => *status,
-            _ => return false,
+            _ => {
+                return Err(ParamError {
+                    message: "Ok field is not a boolean".to_string(),
+                })
+            }
         },
-        None => return false,
+        None => {
+            return Err(ParamError {
+                message: "Ok field doesn't exist".to_string(),
+            })
+        }
     };
-    status
+    Ok(status)
 }
 
 fn parse_json_from_string(json_string: String) -> Result<serde_json::Value, ParamError> {
     let parsed_json = match serde_json::from_str::<serde_json::Value>(&json_string) {
         Ok(parsed_json) => parsed_json,
         Err(error) => {
-            let error_message = error.to_string();
             return Err(ParamError {
-                message: error_message,
+                message: error.to_string(),
             });
         }
     };
-    if !is_json_ok(&parsed_json) {
+    let ok_status = match is_json_ok(&parsed_json) {
+        Ok(ok_status) => ok_status,
+        Err(error) => return Err(error),
+    };
+    if !ok_status {
         let error_message = match parsed_json.get("error") {
             Some(value) => value,
             None => {
-                let error_message = "Error field doesn't exist".to_string();
                 return Err(ParamError {
-                    message: error_message,
+                    message: "Error field doesn't exist".to_string(),
                 });
             }
         };
         let error_message = match error_message {
             serde_json::Value::String(error_message) => error_message,
             _ => {
-                let error_message = "Error field is not a string".to_string();
                 return Err(ParamError {
-                    message: error_message,
+                    message: "Error field is not a string".to_string(),
                 });
             }
         };
@@ -59,20 +68,16 @@ where
     let correct_json = match correct_json.get(json_field) {
         Some(value) => value,
         None => {
-            let error_message = "This field doesn't exits".to_string();
             return Err(ParamError {
-                message: error_message,
+                message: "This field doesn't exits".to_string(),
             });
         }
     };
     match serde_json::from_value::<T>(correct_json.clone()) {
         Ok(parsed_value) => Ok(parsed_value),
-        Err(error) => {
-            let error_message = error.to_string();
-            Err(ParamError {
-                message: error_message,
-            })
-        }
+        Err(error) => Err(ParamError {
+            message: error.to_string(),
+        }),
     }
 }
 
@@ -90,16 +95,15 @@ where
         Err(error) => return Err(error),
     };
     match correct_json.get(json_field) {
-        Some(messages) => match messages {
-            serde_json::Value::Array(messages) => {
+        Some(field_value) => match field_value {
+            serde_json::Value::Array(vector) => {
                 let mut final_vec = vec![];
-                for message in messages {
-                    let parsed_value = match serde_json::from_value::<T>(message.clone()) {
+                for elements in vector {
+                    let parsed_value = match serde_json::from_value::<T>(elements.clone()) {
                         Ok(parsed_value) => parsed_value,
                         Err(error) => {
-                            let error_message = error.to_string();
                             return Err(ParamError {
-                                message: error_message,
+                                message: error.to_string(),
                             });
                         }
                     };
@@ -108,16 +112,14 @@ where
                 return Ok(final_vec);
             }
             _ => {
-                let error_message = "Value of this field is not an array".to_string();
                 return Err(ParamError {
-                    message: error_message,
+                    message: "Value of this field is not an array".to_string(),
                 });
             }
         },
         None => {
-            let error_message = "This field doesn't exits".to_string();
             return Err(ParamError {
-                message: error_message,
+                message: "This field doesn't exits".to_string(),
             });
         }
     }
