@@ -4,6 +4,7 @@
 
 ;; Author: Radosław Kostrzewski <radoslaw.kostrzewski@protonmail.com>
 ;; Keywords: slack, tools
+;; Package-Requires: ((request "0.3.2"))
 ;; Version: 1.0.0
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -62,12 +63,15 @@
 
 (defun slackmacs-websocket-close ()
     (interactive)
-    (cancel-timer slackmacs_websocket_handler)
-    (makunbound 'slackmacs_websocket_handler)
+    (if (boundp 'slackmacs_websocket_handler)
+        (cancel-timer slackmacs_websocket_handler)
+        (makunbound 'slackmacs_websocket_handler)
+    )
 )
 
 (defun slackmacs-close ()
     (interactive)
+
     (slackmacs-websocket-close)
     (delete-process "*slackmacs-backend*")
     (kill-buffer "*slackmacs-backend*")

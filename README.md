@@ -18,8 +18,9 @@
 2. Install [Emacs](https://www.gnu.org/software/emacs/download.html)
 3. In the root directory run `make` command
 4. After successful build `slackmacs-VERSION.tar` file will be created in the root directory
-5. Open Emacs and install the package with `M-x package-install-file` command
-6. In `~/.emacs` add the following line `(require 'slackmacs)`
+5. Install the `request` package in Emacs with `M-x package-install` command (it's in MELPA repository)
+6. Open Emacs and install the package with `M-x package-install-file` command
+7. In `~/.emacs` add the following line `(require 'slackmacs)`
 
 ## Configuration
 
