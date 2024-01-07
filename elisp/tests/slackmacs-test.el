@@ -5,7 +5,7 @@
 
 (defun read-mock-file (file)
     (with-temp-buffer
-        (insert-file-contents (format "../__mocks__/%s.json" file))
+        (insert-file-contents (format "../../__mocks__/%s.json" file))
         (buffer-string)
     )
 )

@@ -2,6 +2,7 @@ use std::collections::HashMap;
 
 use super::{Conversation, User};
 
+#[derive(Clone)]
 pub struct Slack {
     pub conversations: HashMap<String, Conversation>,
     pub users: HashMap<String, User>,

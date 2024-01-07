@@ -165,6 +165,9 @@ impl MessageEvent {
                 parent_message.replies.as_mut().unwrap()
             }
         };
+        if replies.get(&self.ts).is_some() {
+            return ();
+        }
         replies.insert(self.ts.to_string(), reply);
         parent_message.reply_count = Some(parent_message.reply_count.unwrap_or(0) + 1);
     }

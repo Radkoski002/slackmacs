@@ -3,7 +3,7 @@ use emacs::{defun, Result};
 use crate::api_types::{Event, EventType, MessageEvent, Slack};
 
 #[defun]
-fn handle_events(events_json: String, slack_instance: &mut Slack) -> Result<()> {
+pub fn handle_events(events_json: String, slack_instance: &mut Slack) -> Result<()> {
     let parsed_json = serde_json::from_str::<serde_json::Value>(events_json.as_str()).unwrap();
     let parsed_json = parsed_json.as_array().unwrap();
     for event in parsed_json {

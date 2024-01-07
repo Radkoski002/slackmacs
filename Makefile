@@ -17,6 +17,9 @@ package: build build-backend
 	cp -r ./elisp/* $(PACKAGE_DIR)
 	tar cvf ./$(PACKAGE_NAME).tar --exclude="*#" --exclude="*~" -C $(PACKAGE_DIR)/.. $(PACKAGE_NAME)
 
+test:
+	cargo test --manifest-path ./emacs-rust/Cargo.toml
+
 clean:
 	rm -f ./$(PACKAGE_NAME).tar
 	rm -rf $(PACKAGE_DIR)

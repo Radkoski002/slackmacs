@@ -1,4 +1,3 @@
-mod connection;
 mod conversation;
 mod event;
 mod messages;
@@ -6,7 +5,6 @@ mod profile;
 mod slack;
 mod user;
 
-pub use connection::Connection;
 pub use conversation::Conversation;
 pub use event::{Event, EventType, MessageEvent};
 pub use messages::{BaseMessage, ReplyMessage};

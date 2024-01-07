@@ -9,27 +9,20 @@ use crate::{
 };
 use itertools::Itertools;
 
-#[defun]
-fn from_json(
+pub fn populate_messages(
     json: String,
     conversation_id: String,
     slack_instance: &mut Slack,
-    env: &Env,
-) -> Result<()> {
-    let json_clone = json.clone();
-    let message_vec = get_rust_vector_from_json::<BaseMessage>(json_clone, "messages".to_string());
-    match message_vec {
+) -> std::result::Result<(), String> {
+    let conversation_vec = get_rust_vector_from_json::<BaseMessage>(json, "messages".to_string());
+    match conversation_vec {
         Ok(rust_vector) => {
             let conversation = match slack_instance
                 .conversations
                 .get_mut(conversation_id.as_str())
             {
                 Some(conversation) => conversation,
-                None => {
-                    let error_message = "Conversation doesn't exist".to_string();
-                    env.signal(api_error, (error_message,))?;
-                    return Ok(());
-                }
+                None => return Err("Conversation doesn't exist".to_string()),
             };
             let messages = match conversation.messages.as_mut() {
                 Some(_) => return Ok(()),
@@ -45,21 +38,32 @@ fn from_json(
                 messages.insert(message.get_ts(), message.clone());
             }
         }
-        Err(error) => env.signal(api_error, (error.message,))?,
+        Err(error) => return Err(error.message),
     }
     Ok(())
 }
 
 #[defun]
-fn replies_from_json(
+fn from_json(
+    json: String,
+    conversation_id: String,
+    slack_instance: &mut Slack,
+    env: &Env,
+) -> Result<()> {
+    match populate_messages(json, conversation_id, slack_instance) {
+        Ok(()) => (),
+        Err(error) => env.signal(api_error, (error,))?,
+    }
+    Ok(())
+}
+
+pub fn populate_replies(
     json: String,
     conversation_id: String,
     parent_ts: String,
     slack_instance: &mut Slack,
-    env: &Env,
-) -> Result<()> {
-    let json_clone = json.clone();
-    let reply_vec = get_rust_vector_from_json::<ReplyMessage>(json_clone, "messages".to_string());
+) -> std::result::Result<(), String> {
+    let reply_vec = get_rust_vector_from_json::<ReplyMessage>(json, "messages".to_string());
     match reply_vec {
         Ok(reply_vector) => {
             let conversation = match slack_instance
@@ -67,11 +71,7 @@ fn replies_from_json(
                 .get_mut(conversation_id.as_str())
             {
                 Some(conversation) => conversation,
-                None => {
-                    let error_message = "Conversation doesn't exist".to_string();
-                    env.signal(api_error, (error_message,))?;
-                    return Ok(());
-                }
+                None => return Err("Conversation doesn't exist".to_string()),
             };
             let parent_message = conversation
                 .messages
@@ -90,7 +90,22 @@ fn replies_from_json(
                 replies.insert(reply.get_ts(), reply.clone());
             }
         }
-        Err(error) => env.signal(api_error, (error.message,))?,
+        Err(error) => return Err(error.message),
+    }
+    Ok(())
+}
+
+#[defun]
+fn replies_from_json(
+    json: String,
+    conversation_id: String,
+    parent_ts: String,
+    slack_instance: &mut Slack,
+    env: &Env,
+) -> Result<()> {
+    match populate_replies(json, conversation_id, parent_ts, slack_instance) {
+        Ok(()) => (),
+        Err(error) => env.signal(api_error, (error,))?,
     }
     Ok(())
 }

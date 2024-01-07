@@ -2,9 +2,9 @@
     {
         "type": "message",
         "channel": "C00000001",
-        "user": "U00000001",
-        "text": "edited message",
+        "user": "USLACKBOT",
         "ts": "1703853029.543409",
+        "text": "Greetings!",
         "deleted_ts": "1703853029.543409",
         "subtype": "message_deleted",
         "previous_message": {
