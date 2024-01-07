@@ -54,6 +54,10 @@ fn reply_add(
                     parent_message.replies.as_mut().unwrap()
                 }
             };
+            if replies.get(&message.get_ts()).is_some() {
+                return Ok(());
+            }
+            parent_message.reply_count = Some(parent_message.reply_count.unwrap_or(0) + 1);
             replies.insert(message.get_ts(), message);
         }
         Err(error) => return env.signal(api_error, (error.message,))?,
@@ -123,6 +127,18 @@ fn reply_delete(
     let messages = conversation.messages.as_mut().unwrap();
     let parent_message = messages.get_mut(parent_ts.as_str()).unwrap();
     let replies = parent_message.replies.as_mut().unwrap();
+    if replies.get(ts.as_str()).is_none() {
+        return Ok(());
+    }
     replies.remove(ts.as_str());
+    let reply_count = parent_message.reply_count.as_mut();
+    match reply_count {
+        Some(reply_count) => {
+            if *reply_count > 0 {
+                *reply_count -= 1;
+            }
+        }
+        None => return Ok(()),
+    };
     Ok(())
 }

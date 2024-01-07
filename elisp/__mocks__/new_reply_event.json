@@ -1,0 +1,11 @@
+[
+    {
+        "type": "message",
+        "subtype": "message_replied",
+        "channel": "C00000001",
+        "user": "U00000001",
+        "text": "new reply",
+        "ts": "1703853038.523523",
+        "thread_ts": "1698435687.161709"
+    }
+]

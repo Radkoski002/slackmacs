@@ -77,15 +77,11 @@ impl MessageEvent {
                     parent_message.replies.as_mut().unwrap()
                 }
             };
-            let reply_count = match &mut parent_message.reply_count {
-                Some(reply_count) => reply_count,
-                None => {
-                    parent_message.reply_count = Some(0);
-                    parent_message.reply_count.as_mut().unwrap()
-                }
-            };
+            if replies.get(&self.ts).is_some() {
+                return ();
+            }
             replies.insert(self.ts.to_string(), reply);
-            *reply_count += 1;
+            parent_message.reply_count = Some(parent_message.reply_count.unwrap_or(0) + 1);
         } else {
             let message = BaseMessage::from(self.clone());
             messages.insert(self.ts.to_string(), message);
@@ -131,6 +127,9 @@ impl MessageEvent {
                 Some(replies) => replies,
                 None => return (),
             };
+            if replies.get(deleted_ts).is_none() {
+                return ();
+            }
             replies.remove(deleted_ts);
             match &mut parent_message.reply_count {
                 Some(reply_count) => {
@@ -167,10 +166,7 @@ impl MessageEvent {
             }
         };
         replies.insert(self.ts.to_string(), reply);
-        match &mut parent_message.reply_count {
-            Some(reply_count) => *reply_count += 1,
-            None => parent_message.reply_count = Some(1),
-        };
+        parent_message.reply_count = Some(parent_message.reply_count.unwrap_or(0) + 1);
     }
 
     pub fn handle_event(&self, slack_instance: &mut Slack) {

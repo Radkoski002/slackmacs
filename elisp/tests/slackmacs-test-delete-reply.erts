@@ -1,0 +1,23 @@
+Name: Delete Reply
+
+=-=
+Jane Doe: hello
+    Replies: 2
+
+Slackbot: Hello!
+
+John Doe: hello
+
+Slackbot: Greetings!
+
+=-=
+Jane Doe: hello
+    Replies: 1
+
+Slackbot: Hello!
+
+John Doe: hello
+
+Slackbot: Greetings!
+
+=-=-=

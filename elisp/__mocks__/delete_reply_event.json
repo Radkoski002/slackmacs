@@ -1,0 +1,17 @@
+[
+    {
+        "type": "message",
+        "channel": "C00000001",
+        "user": "U00000002",
+        "ts": "1702822814.449089",
+        "deleted_ts": "1702822814.449089",
+        "thread_ts": "1698435687.161709",
+        "subtype": "message_deleted",
+        "previous_message": {
+            "text": "how are you?",
+            "ts": "1702822814.449089",
+            "user": "U00000002",
+            "thread_ts": "1698435687.161709"
+        }
+    }
+]
