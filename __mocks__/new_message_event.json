@@ -1,9 +1,9 @@
 [
     {
         "type": "message",
-        "channel": "C00000001",
-        "user": "U00000001",
+        "channel": "C1",
+        "user": "U1",
         "text": "new message",
-        "ts": "1703853038.523419"
+        "ts": "8"
     }
 ]

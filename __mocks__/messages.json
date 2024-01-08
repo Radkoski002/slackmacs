@@ -2,29 +2,29 @@
     "messages": [
         {
             "text": "Greetings!",
-            "ts": "1703853029.543409",
+            "ts": "4",
             "type": "message",
             "user": "USLACKBOT"
         },
         {
             "text": "hello",
-            "ts": "1703853029.181129",
+            "ts": "3",
             "type": "message",
-            "user": "U00000001"
+            "user": "U1"
         },
         {
             "text": "Hello!",
-            "ts": "1698435687.364929",
+            "ts": "2",
             "type": "message",
             "user": "USLACKBOT"
         },
         {
             "reply_count": 2,
             "text": "hello",
-            "thread_ts": "1698435687.161709",
-            "ts": "1698435687.161709",
+            "thread_ts": "1",
+            "ts": "1",
             "type": "message",
-            "user": "U00000002"
+            "user": "U2"
         }
     ],
     "ok": true

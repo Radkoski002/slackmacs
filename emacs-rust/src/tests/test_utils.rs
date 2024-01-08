@@ -33,7 +33,7 @@ pub fn populate_mocked_users(slack_instance: &mut Slack) {
 
 fn populate_mocked_messages(slack_instance: &mut Slack) {
     let messages_mock = read_mocked_json_file("messages");
-    match populate_messages(messages_mock, "C00000001".to_string(), slack_instance) {
+    match populate_messages(messages_mock, "C1".to_string(), slack_instance) {
         Ok(()) => (),
         Err(error) => {
             println!("Error: {}", error);
@@ -45,8 +45,8 @@ fn populate_mocked_replies(slack_instance: &mut Slack) {
     let replies_mock = read_mocked_json_file("replies");
     match populate_replies(
         replies_mock,
-        "C00000001".to_string(),
-        "1698435687.161709".to_string(),
+        "C1".to_string(),
+        "1".to_string(),
         slack_instance,
     ) {
         Ok(()) => (),

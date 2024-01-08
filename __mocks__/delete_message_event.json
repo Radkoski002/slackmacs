@@ -1,15 +1,15 @@
 [
     {
         "type": "message",
-        "channel": "C00000001",
+        "channel": "C1",
         "user": "USLACKBOT",
-        "ts": "1703853029.543409",
+        "ts": "4",
         "text": "Greetings!",
-        "deleted_ts": "1703853029.543409",
+        "deleted_ts": "4",
         "subtype": "message_deleted",
         "previous_message": {
             "text": "Greetings!",
-            "ts": "1703853029.543409",
+            "ts": "4",
             "user": "USLACKBOT"
         }
     }

@@ -1,7 +1,7 @@
 {
     "channels": [
         {
-            "id": "C00000001",
+            "id": "C1",
             "is_archived": false,
             "is_channel": true,
             "is_ext_shared": false,
@@ -18,7 +18,7 @@
             "name": "test"
         },
         {
-            "id": "C00000002",
+            "id": "C2",
             "is_archived": false,
             "is_channel": true,
             "is_ext_shared": false,
@@ -35,7 +35,7 @@
             "name": "random"
         },
         {
-            "id": "C00000003",
+            "id": "C3",
             "is_archived": false,
             "is_channel": true,
             "is_ext_shared": false,
@@ -52,7 +52,7 @@
             "name": "general"
         },
         {
-            "id": "C00000004",
+            "id": "C4",
             "is_archived": false,
             "is_channel": false,
             "is_ext_shared": false,
@@ -69,7 +69,7 @@
             "name": "mpim-john.doe--jane.doe"
         },
         {
-            "id": "D00000001",
+            "id": "D1",
             "is_archived": false,
             "is_frozen": false,
             "is_im": true,
@@ -78,22 +78,22 @@
             "user": "USLACKBOT"
         },
         {
-            "id": "D00000002",
+            "id": "D2",
             "is_archived": false,
             "is_frozen": false,
             "is_im": true,
             "is_org_shared": false,
             "is_user_deleted": false,
-            "user": "U00000001"
+            "user": "U1"
         },
         {
-            "id": "D00000003",
+            "id": "D3",
             "is_archived": false,
             "is_frozen": false,
             "is_im": true,
             "is_org_shared": false,
             "is_user_deleted": false,
-            "user": "U00000002"
+            "user": "U2"
         }
     ],
     "ok": true,

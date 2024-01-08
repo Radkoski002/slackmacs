@@ -2,6 +2,8 @@ use std::collections::HashMap;
 
 use serde::{Deserialize, Serialize};
 
+use crate::custom_errors::ParamError;
+
 use super::{BaseMessage, ReplyMessage, Slack};
 
 pub enum EventType {
@@ -63,29 +65,8 @@ pub struct MessageEvent {
 
 impl MessageEvent {
     fn handle_base_event(&self, messages: &mut HashMap<String, BaseMessage>) {
-        if self.thread_ts.is_some() {
-            let reply = ReplyMessage::from(self.clone());
-            let thread_ts = self.thread_ts.as_ref().unwrap();
-            let parent_message = match messages.get_mut(thread_ts) {
-                Some(message) => message,
-                None => return (),
-            };
-            let replies = match &mut parent_message.replies {
-                Some(replies) => replies,
-                None => {
-                    parent_message.replies = Some(HashMap::new());
-                    parent_message.replies.as_mut().unwrap()
-                }
-            };
-            if replies.get(&self.ts).is_some() {
-                return ();
-            }
-            replies.insert(self.ts.to_string(), reply);
-            parent_message.reply_count = Some(parent_message.reply_count.unwrap_or(0) + 1);
-        } else {
-            let message = BaseMessage::from(self.clone());
-            messages.insert(self.ts.to_string(), message);
-        }
+        let message = BaseMessage::from(self.clone());
+        messages.insert(self.ts.to_string(), message);
         return ();
     }
     fn handle_message_changed(&self, messages: &mut HashMap<String, BaseMessage>) {
@@ -172,26 +153,36 @@ impl MessageEvent {
         parent_message.reply_count = Some(parent_message.reply_count.unwrap_or(0) + 1);
     }
 
-    pub fn handle_event(&self, slack_instance: &mut Slack) {
+    pub fn handle_event(&self, slack_instance: &mut Slack) -> Result<(), ParamError> {
         let conversation = match slack_instance.conversations.get_mut(self.channel.as_str()) {
             Some(conversation) => conversation,
-            None => return (),
+            None => return Ok(()),
         };
 
         let messages = match &mut conversation.messages {
             Some(messages) => messages,
-            None => return (),
+            None => return Ok(()),
         };
 
         let message_subtype = match &self.subtype {
             Some(subtype) => subtype,
-            None => return self.handle_base_event(messages),
+            None => return Ok(self.handle_base_event(messages)),
         };
         match MessageSubtype::from_string(message_subtype.to_string()) {
-            Some(MessageSubtype::MessageChanged) => return self.handle_message_changed(messages),
-            Some(MessageSubtype::MessageDeleted) => return self.handle_message_deleted(messages),
-            Some(MessageSubtype::MessageReplied) => return self.handle_message_replied(messages),
-            None => Err("Unknown message subtype".to_string()).unwrap(),
+            Some(MessageSubtype::MessageChanged) => {
+                return Ok(self.handle_message_changed(messages))
+            }
+            Some(MessageSubtype::MessageDeleted) => {
+                return Ok(self.handle_message_deleted(messages))
+            }
+            Some(MessageSubtype::MessageReplied) => {
+                return Ok(self.handle_message_replied(messages))
+            }
+            None => {
+                return Err(ParamError {
+                    message: "Unknown message subtype".to_string(),
+                })
+            }
         }
     }
 }

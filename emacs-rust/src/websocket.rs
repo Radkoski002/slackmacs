@@ -22,7 +22,10 @@ pub fn handle_events(events_json: String, slack_instance: &mut Slack) -> Result<
         };
         match parsed_event {
             EventType::MessageEvent(message_event) => {
-                message_event.handle_event(slack_instance);
+                match message_event.handle_event(slack_instance) {
+                    Ok(_) => (),
+                    Err(_) => continue,
+                };
             }
             EventType::Generic(_) => continue,
         }

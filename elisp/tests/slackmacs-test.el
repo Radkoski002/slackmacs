@@ -18,8 +18,8 @@
         (users-data (read-mock-file "users"))
         (messages-data (read-mock-file "messages"))
         (replies-data (read-mock-file "replies"))
-        (id "C00000001")
-        (ts "1698435687.161709")
+        (id "C1")
+        (ts "1")
         )
             (slackmacs/users-list-from-json users-data slackmacs_instance)
             (slackmacs/conversation-list-from-json convs-data slackmacs_instance)
@@ -38,7 +38,7 @@
 (defun setup-slackmacs-conversation-test (test-func)
     (setup-slackmacs-test
 	(lambda ()
-	    (let ((id "C00000001"))
+	    (let ((id "C1"))
 		(rename-buffer (format "conversation-%s" id))
 		(funcall test-func id)
 		(slackmacs-update-conversation id)
@@ -50,7 +50,7 @@
 (defun setup-slackmacs-replies-test (test-func)
     (setup-slackmacs-test
 	(lambda ()
-	    (let ((id "C00000001") (ts "1698435687.161709"))
+	    (let ((id "C1") (ts "1"))
 		(rename-buffer (format "reply-%s-%s" id ts))
 		(funcall test-func id ts)
 		(slackmacs-update-replies id ts)
@@ -109,7 +109,7 @@
 (defun send-message-overlap ()
     (setup-slackmacs-conversation-test
         (lambda (id)
-            (let ((ts "1703853029.543409") (api-data (read-mock-file "new_message")) (event-data (read-mock-file "new_message_event")))
+            (let ((ts "4") (api-data (read-mock-file "new_message")) (event-data (read-mock-file "new_message_event")))
                 (slackmacs/message-add slackmacs_instance api-data id)
                 (slackmacs/websocket-handle-events event-data slackmacs_instance)
             )
@@ -120,7 +120,7 @@
 (defun send-message-overlap-2 ()
     (setup-slackmacs-conversation-test
         (lambda (id)
-            (let ((ts "1703853029.543409") (api-data (read-mock-file "new_message")) (event-data (read-mock-file "new_message_event")))
+            (let ((ts "4") (api-data (read-mock-file "new_message")) (event-data (read-mock-file "new_message_event")))
                 (slackmacs/websocket-handle-events event-data slackmacs_instance)
                 (slackmacs/message-add slackmacs_instance api-data id)
             )
@@ -131,7 +131,7 @@
 (defun send-reply ()
     (setup-slackmacs-conversation-test
         (lambda (id)
-            (let ((data (read-mock-file "new_reply")) (parent_ts "1698435687.161709"))
+            (let ((data (read-mock-file "new_reply")) (parent_ts "1"))
                 (slackmacs/message-reply-add slackmacs_instance data id parent_ts)
             )
         )
@@ -141,7 +141,7 @@
 (defun edit-message ()
     (setup-slackmacs-conversation-test
         (lambda (id)
-            (let ((ts "1703853029.543409") (text "edited message"))
+            (let ((ts "4") (text "edited message"))
                 (slackmacs/message-edit slackmacs_instance "{\"ok\": true}" text id ts)
             )
         )
@@ -151,7 +151,7 @@
 (defun delete-message ()
     (setup-slackmacs-conversation-test
         (lambda (id)
-            (let ((ts "1703853029.543409"))
+            (let ((ts "4"))
                 (slackmacs/message-delete slackmacs_instance "{\"ok\": true}" id ts)
             )
         )
@@ -161,7 +161,7 @@
 (defun delete-message-overlap ()
     (setup-slackmacs-conversation-test
         (lambda (id)
-            (let ((ts "1703853029.543409") (data (read-mock-file "delete_message_event")))
+            (let ((ts "4") (data (read-mock-file "delete_message_event")))
                 (slackmacs/message-delete slackmacs_instance "{\"ok\": true}" id ts)
                 (slackmacs/websocket-handle-events data slackmacs_instance)
             )
@@ -172,7 +172,7 @@
 (defun delete-message-overlap-2 ()
     (setup-slackmacs-conversation-test
         (lambda (id)
-            (let ((ts "1703853029.543409") (data (read-mock-file "delete_message_event")))
+            (let ((ts "4") (data (read-mock-file "delete_message_event")))
                 (slackmacs/websocket-handle-events data slackmacs_instance)
                 (slackmacs/message-delete slackmacs_instance "{\"ok\": true}" id ts)
             )

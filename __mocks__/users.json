@@ -3,7 +3,7 @@
         {
             "deleted": false,
             "has_2fa": false,
-            "id": "U00000001",
+            "id": "U1",
             "is_admin": true,
             "is_app_user": false,
             "is_bot": false,
@@ -18,7 +18,7 @@
         {
             "deleted": false,
             "has_2fa": false,
-            "id": "U00000002",
+            "id": "U2",
             "is_admin": true,
             "is_app_user": false,
             "is_bot": false,

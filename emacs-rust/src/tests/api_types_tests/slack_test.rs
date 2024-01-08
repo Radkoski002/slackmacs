@@ -13,18 +13,8 @@ fn test_slack_instance_populate() {
     let users = instance.users;
     assert_eq!(conversations.len(), 7);
     assert_eq!(users.len(), 3);
-    let messages = conversations
-        .get("C00000001")
-        .unwrap()
-        .messages
-        .as_ref()
-        .unwrap();
+    let messages = conversations.get("C1").unwrap().messages.as_ref().unwrap();
     assert_eq!(messages.len(), 4);
-    let replies = messages
-        .get("1698435687.161709")
-        .unwrap()
-        .replies
-        .as_ref()
-        .unwrap();
+    let replies = messages.get("1").unwrap().replies.as_ref().unwrap();
     assert_eq!(replies.len(), 3)
 }

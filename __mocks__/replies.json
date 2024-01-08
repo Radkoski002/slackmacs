@@ -3,26 +3,26 @@
         {
             "reply_count": 2,
             "text": "hello",
-            "thread_ts": "1698435687.161709",
-            "ts": "1698435687.161709",
+            "thread_ts": "1",
+            "ts": "1",
             "type": "message",
-            "user": "U00000002"
+            "user": "U2"
         },
         {
-            "parent_user_id": "U00000002",
+            "parent_user_id": "U2",
             "text": "hey",
-            "thread_ts": "1698435687.161709",
-            "ts": "1702388734.707549",
+            "thread_ts": "1",
+            "ts": "5",
             "type": "message",
-            "user": "U00000001"
+            "user": "U1"
         },
         {
-            "parent_user_id": "U00000002",
+            "parent_user_id": "U2",
             "text": "how are you?",
-            "thread_ts": "1698435687.161709",
-            "ts": "1702822814.449089",
+            "thread_ts": "1",
+            "ts": "6",
             "type": "message",
-            "user": "U00000002"
+            "user": "U2"
         }
     ],
     "ok": true
