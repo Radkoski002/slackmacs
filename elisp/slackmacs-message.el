@@ -54,14 +54,14 @@
     (let ((message_ts (button-get (button-at (point)) 'ts)))
       (slackmacs-request 
         "delete-message" 
-        (lambda (_) 
+        (lambda (data) 
           (if parent_ts
             (progn 
-              (slackmacs/message-reply-delete slackmacs_instance conversation_id message_ts parent_ts)
+              (slackmacs/message-reply-delete slackmacs_instance data conversation_id message_ts parent_ts)
               (slackmacs-update-replies conversation_id parent_ts)
             )
             (progn 
-              (slackmacs/message-delete slackmacs_instance conversation_id message_ts)
+              (slackmacs/message-delete slackmacs_instance data conversation_id message_ts)
               (slackmacs-update-conversation conversation_id)
             )
           )
@@ -85,14 +85,14 @@
       )
         (slackmacs-request 
           "edit-message" 
-          (lambda (_) 
+          (lambda (data) 
             (if parent_ts
               (progn 
-                (slackmacs/message-reply-edit slackmacs_instance text conversation_id message_ts parent_ts)
+                (slackmacs/message-reply-edit slackmacs_instance data text conversation_id message_ts parent_ts)
                 (slackmacs-update-replies conversation_id parent_ts)
               )
               (progn 
-                (slackmacs/message-edit slackmacs_instance text conversation_id message_ts)
+                (slackmacs/message-edit slackmacs_instance data text conversation_id message_ts)
                 (slackmacs-update-conversation conversation_id)
               )
             )

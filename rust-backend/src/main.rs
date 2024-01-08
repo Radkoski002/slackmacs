@@ -228,7 +228,9 @@ async fn start(
     });
 
     *is_websocket_running = true;
-    return Ok(Response::new(full("started".to_string())));
+    return Ok(Response::new(full(
+        "Websocket started successfully".to_string(),
+    )));
 }
 
 async fn get_websocket_updates(

@@ -2,6 +2,7 @@
 emacs::define_errors! {
     api_error "There was an error with slack API" (error)
     param_error "Invalid parameter" (wrong_type_argument)
+    buffer_error "Invalid buffer" (wrong_type_argument)
 }
 
 // rust

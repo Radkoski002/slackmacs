@@ -5,7 +5,7 @@ use emacs::{defun, Env, Result};
 use crate::{
     api_types::{BaseMessage, ReplyMessage, Slack},
     custom_errors::api_error,
-    helpers::get_value_from_json,
+    helpers::{get_value_from_json, parse_json_from_string},
 };
 
 #[defun]
@@ -68,10 +68,20 @@ fn reply_add(
 #[defun]
 fn edit(
     slack_instance: &mut Slack,
+    response: String,
     text: String,
     conversation_id: String,
     ts: String,
+    env: &Env,
 ) -> Result<()> {
+    let parsed_response = parse_json_from_string(response);
+    match parsed_response {
+        Ok(_) => (),
+        Err(error) => {
+            env.message(format!("Error: {}", error.message))?;
+            return env.signal(api_error, (error.message,));
+        }
+    };
     let conversation = slack_instance
         .conversations
         .get_mut(conversation_id.as_str())
@@ -85,11 +95,21 @@ fn edit(
 #[defun]
 fn reply_edit(
     slack_instance: &mut Slack,
+    response: String,
     text: String,
     conversation_id: String,
     ts: String,
     parent_ts: String,
+    env: &Env,
 ) -> Result<()> {
+    let parsed_response = parse_json_from_string(response);
+    match parsed_response {
+        Ok(_) => (),
+        Err(error) => {
+            env.message(format!("Error: {}", error.message))?;
+            return env.signal(api_error, (error.message,));
+        }
+    };
     let conversation = slack_instance
         .conversations
         .get_mut(conversation_id.as_str())
@@ -103,7 +123,21 @@ fn reply_edit(
 }
 
 #[defun]
-fn delete(slack_instance: &mut Slack, conversation_id: String, ts: String) -> Result<()> {
+fn delete(
+    slack_instance: &mut Slack,
+    response: String,
+    conversation_id: String,
+    ts: String,
+    env: &Env,
+) -> Result<()> {
+    let parsed_response = parse_json_from_string(response);
+    match parsed_response {
+        Ok(_) => (),
+        Err(error) => {
+            env.message(format!("Error: {}", error.message))?;
+            return env.signal(api_error, (error.message,));
+        }
+    };
     let conversation = slack_instance
         .conversations
         .get_mut(conversation_id.as_str())
@@ -116,10 +150,20 @@ fn delete(slack_instance: &mut Slack, conversation_id: String, ts: String) -> Re
 #[defun]
 fn reply_delete(
     slack_instance: &mut Slack,
+    response: String,
     conversation_id: String,
     ts: String,
     parent_ts: String,
+    env: &Env,
 ) -> Result<()> {
+    let parsed_response = parse_json_from_string(response);
+    match parsed_response {
+        Ok(_) => (),
+        Err(error) => {
+            env.message(format!("Error: {}", error.message))?;
+            return env.signal(api_error, (error.message,));
+        }
+    };
     let conversation = slack_instance
         .conversations
         .get_mut(conversation_id.as_str())

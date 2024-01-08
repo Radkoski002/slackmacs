@@ -35,6 +35,9 @@
 
 (defun slackmacs-start ()
     (interactive)
+    (if (boundp 'slackmacs_instance)
+        (error "Slackmacs is already running")
+    )
     (if (not (boundp 'slackmacs_rust_backend))
         (setq slackmacs_rust_backend 
             (start-process "slackmacs-rust-backend" "*slackmacs-backend*" 
@@ -59,19 +62,24 @@
             (setq slackmacs_websocket_handler (run-at-time t 3 'slackmacs-handle-websocket))
         )
     )
+    (message "Slackmacs started")
 )
 
 (defun slackmacs-websocket-close ()
     (interactive)
     (if (boundp 'slackmacs_websocket_handler)
-        (cancel-timer slackmacs_websocket_handler)
-        (makunbound 'slackmacs_websocket_handler)
+        (progn 
+            (cancel-timer slackmacs_websocket_handler)
+            (makunbound 'slackmacs_websocket_handler)
+        )
     )
 )
 
 (defun slackmacs-close ()
     (interactive)
-
+    (if (not (boundp 'slackmacs_instance ))
+        (error "Slackmacs is not running")
+    )
     (slackmacs-websocket-close)
     (delete-process "*slackmacs-backend*")
     (kill-buffer "*slackmacs-backend*")

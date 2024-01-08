@@ -142,7 +142,7 @@
     (setup-slackmacs-conversation-test
         (lambda (id)
             (let ((ts "1703853029.543409") (text "edited message"))
-                (slackmacs/message-edit slackmacs_instance text id ts)
+                (slackmacs/message-edit slackmacs_instance "{\"ok\": true}" text id ts)
             )
         )
     )
@@ -152,7 +152,7 @@
     (setup-slackmacs-conversation-test
         (lambda (id)
             (let ((ts "1703853029.543409"))
-                (slackmacs/message-delete slackmacs_instance id ts)
+                (slackmacs/message-delete slackmacs_instance "{\"ok\": true}" id ts)
             )
         )
     )
@@ -162,7 +162,7 @@
     (setup-slackmacs-conversation-test
         (lambda (id)
             (let ((ts "1703853029.543409") (data (read-mock-file "delete_message_event")))
-                (slackmacs/message-delete slackmacs_instance id ts)
+                (slackmacs/message-delete slackmacs_instance "{\"ok\": true}" id ts)
                 (slackmacs/websocket-handle-events data slackmacs_instance)
             )
         )
@@ -174,7 +174,7 @@
         (lambda (id)
             (let ((ts "1703853029.543409") (data (read-mock-file "delete_message_event")))
                 (slackmacs/websocket-handle-events data slackmacs_instance)
-                (slackmacs/message-delete slackmacs_instance id ts)
+                (slackmacs/message-delete slackmacs_instance "{\"ok\": true}" id ts)
             )
         )
     )

@@ -19,7 +19,7 @@ fn is_json_ok(json: &serde_json::Value) -> Result<bool, ParamError> {
     Ok(status)
 }
 
-fn parse_json_from_string(json_string: String) -> Result<serde_json::Value, ParamError> {
+pub fn parse_json_from_string(json_string: String) -> Result<serde_json::Value, ParamError> {
     let parsed_json = match serde_json::from_str::<serde_json::Value>(&json_string) {
         Ok(parsed_json) => parsed_json,
         Err(error) => {

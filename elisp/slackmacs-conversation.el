@@ -42,7 +42,16 @@
   (insert "\n\n")
 )
 
-(defun create-back-button ()
+(defun create-conversation-back-button ()
+  (insert-text-button 
+    (propertize "Back" 'face 'link)
+    'action 
+    (lambda (_) (slackmacs-list-conversations))
+  )
+  (insert "\n\n")
+)
+
+(defun create-reply-back-button ()
   (insert-text-button 
     (propertize "Back" 'face 'link)
     'action 
@@ -58,6 +67,7 @@
 (defun slackmacs-update-conversation (id)
   (let ((inhibit-read-only t) (pos (point)))
     (clear-current-buffer)
+    (create-conversation-back-button)
     (slackmacs/messages-list-create-message-buttons slackmacs_instance id 'create-message-button) 
     (goto-char pos)
   )
@@ -67,7 +77,7 @@
 (defun slackmacs-update-replies (id ts)
   (let ((inhibit-read-only t) (pos (point)))
     (clear-current-buffer)
-    (create-back-button)
+    (create-reply-back-button)
     (slackmacs/messages-list-create-reply-buttons slackmacs_instance id ts 'create-reply-button)
     (goto-char pos)
   )
@@ -104,24 +114,6 @@
     "conversation-replies" 
     'get-conversation-replies-callback
     `(("channel" . ,id) ("ts" . ,ts))
-  )
-)
-
-(defun slackmacs-force-refresh-messages ()
-  (interactive)
-  (dolist (conversation-buf (match-buffers "conversation-"))
-      (with-current-buffer conversation-buf
-          (seq-let (_ channel-id) (split-string (buffer-name) "-")
-              (slackmacs-force-refresh-conversation channel-id)
-          )
-      )
-  )
-  (dolist (reply-buf (match-buffers "reply-"))
-      (with-current-buffer reply-buf
-          (seq-let (_ channel-id ts) (split-string (buffer-name) "-")
-              (slackmacs-force-refresh-replies channel-id ts)
-          )
-      )
   )
 )
 
